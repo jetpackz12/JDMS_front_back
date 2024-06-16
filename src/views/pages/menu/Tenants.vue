@@ -190,7 +190,6 @@ import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -211,7 +210,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions("authModule", ["checkAuth"]),
     getInitialFormData() {
       return {
         rooms: this.rooms,
@@ -341,7 +339,6 @@ export default {
   },
   mounted() {
     this.$toast = useToast();
-    this.checkAuth();
   },
 };
 </script>

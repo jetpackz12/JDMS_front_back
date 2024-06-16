@@ -221,7 +221,6 @@
 
 <script>
 import { RoomService } from "@/service/RoomService";
-import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -248,7 +247,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions("authModule", ["checkAuth"]),
     getInitialFormData() {
       return {
         room: null,
@@ -304,7 +302,6 @@ export default {
   },
   mounted() {
     this.roomService.getRooms().then((data) => (this.dataviewValue = data));
-    this.checkAuth();
   },
 };
 </script>

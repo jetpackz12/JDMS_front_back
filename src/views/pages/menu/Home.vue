@@ -87,7 +87,6 @@
 <script>
 import { watch } from "vue";
 import { useLayout } from "@/layout/composables/layout";
-import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -123,7 +122,6 @@ export default {
     );
   },
   methods: {
-    ...mapActions("authModule", ["checkAuth"]),
     setColorOptions() {
       this.documentStyle = getComputedStyle(document.documentElement);
       this.textColor = this.documentStyle.getPropertyValue("--text-color");
@@ -257,9 +255,6 @@ export default {
         },
       };
     },
-  },
-  mounted() {
-    this.checkAuth();
   },
 };
 </script>
