@@ -19,7 +19,10 @@ const authActions = {
       .then((response) => {
         commit("SET_USER", response.data.resData.user);
       })
-      .catch((error) => console.log(error.response.data));
+      .catch((error) => {
+        commit("LOGOUT");
+        localStorage.setItem("token", null);
+      });
   },
   logout({ commit }) {
     commit("LOGOUT");
