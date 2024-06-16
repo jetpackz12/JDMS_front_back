@@ -2,144 +2,151 @@
   <div class="grid">
     <div class="col-12">
       <div class="card">
-        <TableToolKit
-          :hasDelete="hasDelete"
-          :hasFilter="!hasDelete"
-          @openNew="openAddDialog"
-          @filter="openFilterDialog"
-          @print="printTable"
-          @excel="exportCSV"
-          @pdf="exportPDF"
-        />
-
-        <div id="printable" class="card hidden">
-          <DataTable :value="datas" tableStyle="min-width: 20rem">
-            <Column field="room" header="Room"></Column>
-            <Column field="tenant" header="Tenant"></Column>
-            <Column field="prev_read" header="Previous Reading"></Column>
-            <Column field="pres_read" header="Present Reading"></Column>
-            <Column field="amount" header="Amount"></Column>
-            <Column field="due_date" header="Due Date"></Column>
-            <Column field="date_issue" header="Date Issue"></Column>
-          </DataTable>
+        <div v-if="isShowLoading">
+          <Skeleton class="col-12" height="80px"></Skeleton>
+          <Skeleton class="col-12 mt-2" height="300px"></Skeleton>
         </div>
 
-        <DataTable
-          ref="dt"
-          :value="datas"
-          dataKey="id"
-          :paginator="true"
-          :rows="10"
-          :filters="filters"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          :rowsPerPageOptions="[10, 25]"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} water billing payments"
-        >
-          <template #header>
-            <div
-              class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-            >
-              <h5 class="m-0">Manage Water Billing Payments</h5>
-              <IconField iconPosition="left" class="block mt-2 md:mt-0">
-                <InputIcon class="pi pi-search" />
-                <InputText
-                  class="w-full sm:w-auto"
-                  v-model="filters['global'].value"
-                  placeholder="Search..."
-                />
-              </IconField>
-            </div>
-          </template>
+        <div v-else>
+          <TableToolKit
+            :hasDelete="hasDelete"
+            :hasFilter="!hasDelete"
+            @openNew="openAddDialog"
+            @filter="openFilterDialog"
+            @print="printTable"
+            @excel="exportCSV"
+            @pdf="exportPDF"
+          />
 
-          <Column
-            field="room"
-            header="Room"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
+          <div id="printable" class="card hidden">
+            <DataTable :value="datas" tableStyle="min-width: 20rem">
+              <Column field="room" header="Room"></Column>
+              <Column field="tenant" header="Tenant"></Column>
+              <Column field="prev_read" header="Previous Reading"></Column>
+              <Column field="pres_read" header="Present Reading"></Column>
+              <Column field="amount" header="Amount"></Column>
+              <Column field="due_date" header="Due Date"></Column>
+              <Column field="date_issue" header="Date Issue"></Column>
+            </DataTable>
+          </div>
+
+          <DataTable
+            ref="dt"
+            :value="datas"
+            dataKey="id"
+            :paginator="true"
+            :rows="10"
+            :filters="filters"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[10, 25]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} water billing payments"
           >
-            <template #body="slotProps">
-              <span class="p-column-title">Room</span>
-              {{ slotProps.data.room }}
+            <template #header>
+              <div
+                class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+              >
+                <h5 class="m-0">Manage Water Billing Payments</h5>
+                <IconField iconPosition="left" class="block mt-2 md:mt-0">
+                  <InputIcon class="pi pi-search" />
+                  <InputText
+                    class="w-full sm:w-auto"
+                    v-model="filters['global'].value"
+                    placeholder="Search..."
+                  />
+                </IconField>
+              </div>
             </template>
-          </Column>
-          <Column
-            field="tenant"
-            header="Tenant"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Tenant</span>
-              {{ slotProps.data.tenant }}
-            </template>
-          </Column>
-          <Column
-            field="prev_read"
-            header="Previous Reading"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Previous Reading</span>
-              {{ slotProps.data.prev_read }}
-            </template>
-          </Column>
-          <Column
-            field="pres_read"
-            header="Present Reading"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Present Reading</span>
-              {{ slotProps.data.pres_read }}
-            </template>
-          </Column>
-          <Column
-            field="amount"
-            header="Amount"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Amount</span>
-              {{ formatCurrency(slotProps.data.amount) }}
-            </template>
-          </Column>
-          <Column
-            field="due_date"
-            header="Due Date"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Due Date</span>
-              {{ slotProps.data.due_date }}
-            </template>
-          </Column>
-          <Column
-            field="date_issue"
-            header="Date Issue"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Date Issue</span>
-              {{ slotProps.data.date_issue }}
-            </template>
-          </Column>
-          <Column headerStyle="min-width:10rem;">
-            <template #body="slotProps">
-              <Button
-                icon="pi pi-pencil"
-                class="ml-5"
-                severity="success"
-                rounded
-                @click="openUpdateDialog(slotProps.data)"
-              />
-            </template>
-          </Column>
-        </DataTable>
+
+            <Column
+              field="room"
+              header="Room"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Room</span>
+                {{ slotProps.data.room }}
+              </template>
+            </Column>
+            <Column
+              field="tenant"
+              header="Tenant"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Tenant</span>
+                {{ slotProps.data.tenant }}
+              </template>
+            </Column>
+            <Column
+              field="prev_read"
+              header="Previous Reading"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Previous Reading</span>
+                {{ slotProps.data.prev_read }}
+              </template>
+            </Column>
+            <Column
+              field="pres_read"
+              header="Present Reading"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Present Reading</span>
+                {{ slotProps.data.pres_read }}
+              </template>
+            </Column>
+            <Column
+              field="amount"
+              header="Amount"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Amount</span>
+                {{ formatCurrency(slotProps.data.amount) }}
+              </template>
+            </Column>
+            <Column
+              field="due_date"
+              header="Due Date"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Due Date</span>
+                {{ slotProps.data.due_date }}
+              </template>
+            </Column>
+            <Column
+              field="date_issue"
+              header="Date Issue"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Date Issue</span>
+                {{ slotProps.data.date_issue }}
+              </template>
+            </Column>
+            <Column headerStyle="min-width:10rem;">
+              <template #body="slotProps">
+                <Button
+                  icon="pi pi-pencil"
+                  class="ml-5"
+                  severity="success"
+                  rounded
+                  @click="openUpdateDialog(slotProps.data)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
 
         <!-- Dailogs -->
         <AddWaterPaymentDialog
@@ -183,6 +190,7 @@ export default {
       displayAddDialog: false,
       displayUpdateDialog: false,
       hasDelete: false,
+      isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
       tenants: [
@@ -307,9 +315,14 @@ export default {
   created() {
     this.initFilters();
     const waterBillingPaymentService = new WaterBillingPaymentService();
-    waterBillingPaymentService.getWaterBillingPayments().then((data) => {
-      this.datas = data;
-    });
+    waterBillingPaymentService
+      .getWaterBillingPayments()
+      .then((data) => {
+        this.datas = data;
+      })
+      .finally(() => {
+        this.isShowLoading = false;
+      });
   },
   mounted() {
     this.$toast = useToast();

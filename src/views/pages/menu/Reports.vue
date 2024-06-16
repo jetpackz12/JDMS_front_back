@@ -2,81 +2,87 @@
   <div class="grid">
     <div class="col-12">
       <div class="card">
-        <TableToolKit
-          :hasNew="hasNew"
-          :hasDelete="hasDelete"
-          :hasFilter="!hasDelete"
-          @openNew="openAddDialog"
-          @filter="openFilterDialog"
-          @print="printTable"
-          @excel="exportCSV"
-          @pdf="exportPDF"
-        />
-
-        <div id="printable" class="card hidden">
-          <DataTable :value="datas" tableStyle="min-width: 20rem">
-            <Column field="transaction" header="Transaction"></Column>
-            <Column field="description" header="Description"></Column>
-            <Column field="date" header="Date"></Column>
-          </DataTable>
+        <div v-if="isShowLoading">
+          <Skeleton class="col-12" height="80px"></Skeleton>
+          <Skeleton class="col-12 mt-2" height="300px"></Skeleton>
         </div>
 
-        <DataTable
-          ref="dt"
-          :value="datas"
-          dataKey="id"
-          :paginator="true"
-          :rows="10"
-          :filters="filters"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          :rowsPerPageOptions="[10, 25]"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} reports"
-        >
-          <template #header>
-            <div
-              class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-            >
-              <h5 class="m-0">Manage Reports</h5>
-              <IconField iconPosition="left" class="block mt-2 md:mt-0">
-                <InputIcon class="pi pi-search" />
-                <InputText
-                  class="w-full sm:w-auto"
-                  v-model="filters['global'].value"
-                  placeholder="Search..."
-                />
-              </IconField>
-            </div>
-          </template>
+        <div v-else>
+          <TableToolKit
+            :hasNew="hasNew"
+            :hasDelete="hasDelete"
+            :hasFilter="!hasDelete"
+            @filter="openFilterDialog"
+            @print="printTable"
+            @excel="exportCSV"
+            @pdf="exportPDF"
+          />
 
-          <Column
-            field="transaction"
-            header="Transaction"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
+          <div id="printable" class="card hidden">
+            <DataTable :value="datas" tableStyle="min-width: 20rem">
+              <Column field="transaction" header="Transaction"></Column>
+              <Column field="description" header="Description"></Column>
+              <Column field="date" header="Date"></Column>
+            </DataTable>
+          </div>
+
+          <DataTable
+            ref="dt"
+            :value="datas"
+            dataKey="id"
+            :paginator="true"
+            :rows="10"
+            :filters="filters"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[10, 25]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} reports"
           >
-            <template #body="slotProps">
-              <span class="p-column-title">Transaction</span>
-              {{ slotProps.data.transaction }}
+            <template #header>
+              <div
+                class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+              >
+                <h5 class="m-0">Manage Reports</h5>
+                <IconField iconPosition="left" class="block mt-2 md:mt-0">
+                  <InputIcon class="pi pi-search" />
+                  <InputText
+                    class="w-full sm:w-auto"
+                    v-model="filters['global'].value"
+                    placeholder="Search..."
+                  />
+                </IconField>
+              </div>
             </template>
-          </Column>
-          <Column field="description" header="Description" :sortable="true">
-            <template #body="slotProps">
-              <span class="p-column-title">Description</span>
-              {{ slotProps.data.description }}
-            </template>
-          </Column>
-          <Column
-            field="date"
-            header="Date"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Date</span>
-              {{ slotProps.data.date }}
-            </template>
-          </Column>
-        </DataTable>
+
+            <Column
+              field="transaction"
+              header="Transaction"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Transaction</span>
+                {{ slotProps.data.transaction }}
+              </template>
+            </Column>
+            <Column field="description" header="Description" :sortable="true">
+              <template #body="slotProps">
+                <span class="p-column-title">Description</span>
+                {{ slotProps.data.description }}
+              </template>
+            </Column>
+            <Column
+              field="date"
+              header="Date"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Date</span>
+                {{ slotProps.data.date }}
+              </template>
+            </Column>
+          </DataTable>
+        </div>
 
         <!-- Dailogs -->
         <FilterReportDialog
@@ -106,6 +112,7 @@ export default {
       hasDelete: false,
       hasNew: false,
       isFilterByTransaction: false,
+      isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
       transactions: [
@@ -194,41 +201,46 @@ export default {
   created() {
     this.initFilters();
     const reportService = new ReportService();
-    reportService.getReports().then((data) => {
-      this.datas = data.map((item) => {
-        let data = {};
-        if (item.transaction === "1") {
-          data = {
-            ...item,
-            transaction: "Water Billing Payment",
-            description: [
-              `Room: ${item.description.room}`,
-              `Tenant: ${item.description.tenant}`,
-              `Previous Reading: ${item.description.prev_read}`,
-              `Present Reading: ${item.description.pres_read}`,
-              `Amount: ${item.description.amount}`,
-              `Due Date: ${item.description.due_date}`,
-              `Date Issue: ${item.description.date_issue}`,
-            ].join(", "),
-          };
-        } else {
-          data = {
-            ...item,
-            transaction: "Electricity Billing Payment",
-            description: [
-              `Room:  ${item.description.room}`,
-              `Tenant: ${item.description.tenant}`,
-              `Unit Consumed: ${item.description.unit_con}`,
-              `Amount: ${item.description.amount}`,
-              `Due Date: ${item.description.due_date}`,
-              `Date Issue: ${item.description.date_issue}`,
-            ].join(", "),
-          };
-        }
+    reportService
+      .getReports()
+      .then((data) => {
+        this.datas = data.map((item) => {
+          let data = {};
+          if (item.transaction === "1") {
+            data = {
+              ...item,
+              transaction: "Water Billing Payment",
+              description: [
+                `Room: ${item.description.room}`,
+                `Tenant: ${item.description.tenant}`,
+                `Previous Reading: ${item.description.prev_read}`,
+                `Present Reading: ${item.description.pres_read}`,
+                `Amount: ${item.description.amount}`,
+                `Due Date: ${item.description.due_date}`,
+                `Date Issue: ${item.description.date_issue}`,
+              ].join(", "),
+            };
+          } else {
+            data = {
+              ...item,
+              transaction: "Electricity Billing Payment",
+              description: [
+                `Room:  ${item.description.room}`,
+                `Tenant: ${item.description.tenant}`,
+                `Unit Consumed: ${item.description.unit_con}`,
+                `Amount: ${item.description.amount}`,
+                `Due Date: ${item.description.due_date}`,
+                `Date Issue: ${item.description.date_issue}`,
+              ].join(", "),
+            };
+          }
 
-        return data;
+          return data;
+        });
+      })
+      .finally(() => {
+        this.isShowLoading = false;
       });
-    });
   },
   mounted() {
     this.$toast = useToast();

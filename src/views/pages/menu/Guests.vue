@@ -2,153 +2,160 @@
   <div class="grid">
     <div class="col-12">
       <div class="card">
-        <TableToolKit
-          :selectedDatas="selectedDatas"
-          @openNew="openAddDialog"
-          @confirmDeleteSelected="confirmDeleteSelected"
-          @print="printTable"
-          @excel="exportCSV"
-          @pdf="exportPDF"
-        />
-
-        <div id="printable" class="card hidden">
-          <DataTable :value="datas" tableStyle="min-width: 20rem">
-            <Column field="room" header="Room"></Column>
-            <Column field="full_name" header="Name"></Column>
-            <Column field="address" header="Address"></Column>
-            <Column field="contact_number" header="Number"></Column>
-            <Column field="duration" header="Duration"></Column>
-            <Column field="payment" header="Payment"></Column>
-          </DataTable>
+        <div v-if="isShowLoading">
+          <Skeleton class="col-12" height="80px"></Skeleton>
+          <Skeleton class="col-12 mt-2" height="300px"></Skeleton>
         </div>
 
-        <DataTable
-          ref="dt"
-          :value="datas"
-          v-model:selection="selectedDatas"
-          dataKey="id"
-          :paginator="true"
-          :rows="10"
-          :filters="filters"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          :rowsPerPageOptions="[10, 25]"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} guests"
-        >
-          <template #header>
-            <div
-              class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-            >
-              <h5 class="m-0">Manage Guests</h5>
-              <IconField iconPosition="left" class="block mt-2 md:mt-0">
-                <InputIcon class="pi pi-search" />
-                <InputText
-                  class="w-full sm:w-auto"
-                  v-model="filters['global'].value"
-                  placeholder="Search..."
-                />
-              </IconField>
-            </div>
-          </template>
+        <div v-else>
+          <TableToolKit
+            :selectedDatas="selectedDatas"
+            @openNew="openAddDialog"
+            @confirmDeleteSelected="confirmDeleteSelected"
+            @print="printTable"
+            @excel="exportCSV"
+            @pdf="exportPDF"
+          />
 
-          <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-          <Column
-            field="room"
-            header="Room"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
+          <div id="printable" class="card hidden">
+            <DataTable :value="datas" tableStyle="min-width: 20rem">
+              <Column field="room" header="Room"></Column>
+              <Column field="full_name" header="Name"></Column>
+              <Column field="address" header="Address"></Column>
+              <Column field="contact_number" header="Number"></Column>
+              <Column field="duration" header="Duration"></Column>
+              <Column field="payment" header="Payment"></Column>
+            </DataTable>
+          </div>
+
+          <DataTable
+            ref="dt"
+            :value="datas"
+            v-model:selection="selectedDatas"
+            dataKey="id"
+            :paginator="true"
+            :rows="10"
+            :filters="filters"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[10, 25]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} guests"
           >
-            <template #body="slotProps">
-              <span class="p-column-title">Room</span>
-              {{ slotProps.data.room }}
+            <template #header>
+              <div
+                class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+              >
+                <h5 class="m-0">Manage Guests</h5>
+                <IconField iconPosition="left" class="block mt-2 md:mt-0">
+                  <InputIcon class="pi pi-search" />
+                  <InputText
+                    class="w-full sm:w-auto"
+                    v-model="filters['global'].value"
+                    placeholder="Search..."
+                  />
+                </IconField>
+              </div>
             </template>
-          </Column>
-          <Column
-            field="full_name"
-            header="Name"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Name</span>
-              {{ slotProps.data.full_name }}
-            </template>
-          </Column>
-          <Column
-            field="address"
-            header="Address"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Address</span>
-              {{ slotProps.data.address }}
-            </template>
-          </Column>
-          <Column
-            field="contact_number"
-            header="Number"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Number</span>
-              {{ slotProps.data.contact_number }}
-            </template>
-          </Column>
-          <Column
-            field="duration"
-            header="Duration"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Duration</span>
-              {{ slotProps.data.duration }}
-            </template>
-          </Column>
-          <Column
-            field="payment"
-            header="Payment"
-            :sortable="true"
-            headerStyle="width:14%; min-width:8rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Payment</span>
-              {{ formatCurrency(slotProps.data.payment) }}
-            </template>
-          </Column>
-          <Column
-            field="status"
-            header="Status"
-            :sortable="true"
-            headerStyle="width:14%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Status</span>
-              <Tag :severity="getBadgeSeverity(slotProps.data.status)">{{
-                slotProps.data.status === 1 ? "Active" : "Inactive"
-              }}</Tag>
-            </template>
-          </Column>
-          <Column headerStyle="min-width:10rem;">
-            <template #body="slotProps">
-              <Button
-                icon="pi pi-pencil"
-                class="mr-2"
-                severity="success"
-                rounded
-                @click="openUpdateDialog(slotProps.data)"
-              />
-              <Button
-                icon="pi pi-trash"
-                class="mt-2"
-                severity="warning"
-                rounded
-                @click="openDeleteDataDialog(slotProps.data)"
-              />
-            </template>
-          </Column>
-        </DataTable>
+
+            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+            <Column
+              field="room"
+              header="Room"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Room</span>
+                {{ slotProps.data.room }}
+              </template>
+            </Column>
+            <Column
+              field="full_name"
+              header="Name"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Name</span>
+                {{ slotProps.data.full_name }}
+              </template>
+            </Column>
+            <Column
+              field="address"
+              header="Address"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Address</span>
+                {{ slotProps.data.address }}
+              </template>
+            </Column>
+            <Column
+              field="contact_number"
+              header="Number"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Number</span>
+                {{ slotProps.data.contact_number }}
+              </template>
+            </Column>
+            <Column
+              field="duration"
+              header="Duration"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Duration</span>
+                {{ slotProps.data.duration }}
+              </template>
+            </Column>
+            <Column
+              field="payment"
+              header="Payment"
+              :sortable="true"
+              headerStyle="width:14%; min-width:8rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Payment</span>
+                {{ formatCurrency(slotProps.data.payment) }}
+              </template>
+            </Column>
+            <Column
+              field="status"
+              header="Status"
+              :sortable="true"
+              headerStyle="width:14%; min-width:10rem;"
+            >
+              <template #body="slotProps">
+                <span class="p-column-title">Status</span>
+                <Tag :severity="getBadgeSeverity(slotProps.data.status)">{{
+                  slotProps.data.status === 1 ? "Active" : "Inactive"
+                }}</Tag>
+              </template>
+            </Column>
+            <Column headerStyle="min-width:10rem;">
+              <template #body="slotProps">
+                <Button
+                  icon="pi pi-pencil"
+                  class="mr-2"
+                  severity="success"
+                  rounded
+                  @click="openUpdateDialog(slotProps.data)"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  class="mt-2"
+                  severity="warning"
+                  rounded
+                  @click="openDeleteDataDialog(slotProps.data)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
 
         <!-- Dailogs -->
         <AddGuestDialog
@@ -200,6 +207,7 @@ export default {
       displayAddDialog: false,
       displayUpdateDialog: false,
       selectedDatas: null,
+      isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
       rooms: [
@@ -330,14 +338,19 @@ export default {
   created() {
     this.initFilters();
     const guestService = new GuestService();
-    guestService.getGuests().then((data) => {
-      this.datas = data.filter((item) => {
-        return item.status === 1;
+    guestService
+      .getGuests()
+      .then((data) => {
+        this.datas = data.filter((item) => {
+          return item.status === 1;
+        });
+        this.datas = this.datas.map((item) => {
+          return { ...item, duration: item.duration + " Hour" };
+        });
+      })
+      .finally(() => {
+        this.isShowLoading = false;
       });
-      this.datas = this.datas.map((item) => {
-        return { ...item, duration: item.duration + " Hour" };
-      });
-    });
   },
   mounted() {
     this.$toast = useToast();
