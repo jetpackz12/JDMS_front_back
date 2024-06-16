@@ -1,0 +1,8 @@
+{
+    "data": [
+        {"id": "1","room": "1","tenant": "Dummy1 Dummy1 Dummy1","first_name": "Dummy1","middle_name": "Dummy1","last_name": "Dummy1","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","unit_con": 100, "amount":1000, "due_date":"June 30, 2024", "date_issue":"June 15, 2024","status": 1},
+        {"id": "2","room": "2","tenant": "Dummy2 Dummy2 Dummy2","first_name": "Dummy2","middle_name": "Dummy2","last_name": "Dummy2","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","unit_con": 100, "amount":1000, "due_date":"June 30, 2024", "date_issue":"June 15, 2024","status": 1},
+        {"id": "3","room": "3","tenant": "Dummy3 Dummy3 Dummy3","first_name": "Dummy3","middle_name": "Dummy3","last_name": "Dummy3","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","unit_con": 100, "amount":1000, "due_date":"June 30, 2024", "date_issue":"June 15, 2024","status": 1},
+        {"id": "4","room": "4","tenant": "Dummy4 Dummy4 Dummy4","first_name": "Dummy4","middle_name": "Dummy4","last_name": "Dummy4","address": "Poblacion Trinidad, Bohol","contact_number": "09123456781","unit_con": 100, "amount":1000, "due_date":"June 30, 2024", "date_issue":"June 15, 2024","status": 1}
+    ]
+}

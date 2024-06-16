@@ -1,0 +1,8 @@
+{
+    "data": [
+        {"id": "1","image": "bed1.jpg","room": "1","description": "Product Description","capacity": 24,"type": "Standard","price": 20,"availability": 1,"status": 1},
+        {"id": "2","image": "bed2.jpg","room": "2","description": "Product Description","capacity": 24,"type": "Standard","price": 65,"availability": 1,"status": 1},
+        {"id": "3","image": "bed4.jpg","room": "3","description": "Product Description","capacity": 24,"type": "Standard","price": 65,"availability": 1,"status": 0},
+        {"id": "4","image": "bed1.jpg","room": "4","description": "Product Description","capacity": 24,"type": "Premium","price": 64,"availability": 0,"status": 1}
+    ]
+}
