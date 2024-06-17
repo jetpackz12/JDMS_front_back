@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "../../service/axios-config";
+import axiosInstance from "@/service/axios-config";
 
 const authActions = {
   async login({ commit }, formData) {
