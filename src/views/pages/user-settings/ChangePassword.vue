@@ -16,7 +16,7 @@
             id="current_password"
             :feedback="false"
             toggleMask
-            v-model="formData.currentPassword"
+            v-model.lazy="formData.currentPassword"
             :invalid="submitted && !formData.currentPassword"
             :required="true"
             :disabled="isDisabled"
@@ -34,7 +34,7 @@
           <Password
             id="new_password"
             toggleMask
-            v-model="formData.newPassword"
+            v-model.lazy="formData.newPassword"
             :invalid="submitted && !formData.newPassword"
             :required="true"
             :disabled="isDisabled"
@@ -52,7 +52,7 @@
           <Password
             id="confirm_password"
             toggleMask
-            v-model="formData.confirmPassword"
+            v-model.lazy="formData.confirmPassword"
             :invalid="submitted && !formData.confirmPassword"
             :required="true"
             :disabled="isDisabled"
