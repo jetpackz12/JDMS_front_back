@@ -24,9 +24,15 @@ const authActions = {
         localStorage.setItem("token", null);
       });
   },
-  logout({ commit }) {
-    commit("LOGOUT");
-    localStorage.setItem("token", null);
+  async logout({ commit }) {
+    const token = { token: localStorage.getItem("token") };
+    await axiosInstance
+      .post("/api/v1/logout", token)
+      .then((response) => {
+        commit("LOGOUT");
+        localStorage.setItem("token", null);
+      })
+      .catch((error) => console.log(error.response.data));
   },
 };
 
