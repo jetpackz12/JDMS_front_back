@@ -8,7 +8,11 @@
     <hr />
     <div class="flex justify-content-center">
       <Image
-        :src="`/layout/images/${formData.image}`"
+        :src="
+          formData.image === null
+            ? '/layout/images/imageicon.jpg'
+            : apiUrl + '/storage/room-images/' + this.formData.image
+        "
         alt="Image"
         width="250"
         preview
@@ -23,8 +27,10 @@
         name="demo[]"
         accept="image/*"
         :maxFileSize="1000000"
-        @uploader="onUpload()"
+        @uploader="onUpload"
         customUpload
+        :auto="true"
+        chooseLabel="Select image"
         class="w-10rem sm:w-14rem lg:w-18rem"
       />
     </div>
@@ -76,9 +82,12 @@
 </template>
 
 <script>
-import { useToast } from "primevue/usetoast";
-
 export default {
+  data() {
+    return {
+      apiUrl: import.meta.env.VITE_API_URL,
+    };
+  },
   props: {
     formData: {
       type: Object,
@@ -90,26 +99,44 @@ export default {
     hideDialog() {
       this.$emit("formSubmit");
     },
-    submit() {
-      this.$toast.add({
-        severity: "success",
-        summary: "Update Room",
-        detail: "You have successfully update this room.",
-        life: 3000,
-      });
-      this.$emit("formSubmit");
+    async submit() {
+      await this.$store.dispatch("roomModule/updateData", this.formData);
+
+      if (this.isSuccess) {
+        this.$toast.add({
+          severity: "success",
+          summary: "Success",
+          detail: this.message,
+          life: 3000,
+        });
+        this.$emit("formSubmit");
+      } else {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: this.message,
+          life: 3000,
+        });
+      }
     },
-    onUpload() {
-      this.$toast.add({
-        severity: "info",
-        summary: "Success",
-        detail: "File Uploaded",
-        life: 3000,
-      });
+    async onUpload(event) {
+      await this.$store.dispatch("roomModule/uploadImage", event.files[0]);
+
+      if (this.isUpload) {
+        this.formData.image = this.$store.getters["roomModule/image"];
+      }
     },
   },
-  mounted() {
-    this.$toast = useToast();
+  computed: {
+    isUpload() {
+      return this.$store.getters["roomModule/isUpload"];
+    },
+    isSuccess() {
+      return this.$store.getters["roomModule/isSuccess"];
+    },
+    message() {
+      return this.$store.getters["roomModule/message"];
+    },
   },
 };
 </script>

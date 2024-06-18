@@ -31,14 +31,33 @@ export default {
     hideDialog() {
       this.$emit("formSubmit");
     },
-    submit() {
-      this.$toast.add({
-        severity: "success",
-        summary: "Delete Room",
-        detail: "You have successfully delete this room.",
-        life: 3000,
-      });
-      this.$emit("formSubmit");
+    async submit() {
+      await this.$store.dispatch("roomModule/deleteData", this.formData);
+
+      if (this.isSuccess) {
+        this.$toast.add({
+          severity: "success",
+          summary: "Success",
+          detail: this.message,
+          life: 3000,
+        });
+        this.$emit("formSubmit");
+      } else {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: this.message,
+          life: 3000,
+        });
+      }
+    },
+  },
+  computed: {
+    isSuccess() {
+      return this.$store.getters["roomModule/isSuccess"];
+    },
+    message() {
+      return this.$store.getters["roomModule/message"];
     },
   },
 };

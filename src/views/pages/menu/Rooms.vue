@@ -20,8 +20,6 @@
           :layout="layout"
           :paginator="true"
           :rows="9"
-          :sortOrder="sortOrder"
-          :sortField="sortField"
         >
           <template #header>
             <div class="grid grid-nogutter">
@@ -54,7 +52,7 @@
                   <div class="md:w-10rem relative">
                     <img
                       class="block xl:block mx-auto border-round w-full"
-                      :src="`/layout/images/${item.image}`"
+                      :src="`${apiUrl}/storage/room-images/${item.image}`"
                       :alt="item.description"
                     />
                     <Tag
@@ -81,12 +79,13 @@
                           >Capacity: {{ item.capacity }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
-                          >Type: {{ item.type }}</span
+                          >Type:
+                          {{ item.type === 1 ? "Standard" : "Premium" }}</span
                         >
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
                         <span class="text-xl font-semibold text-900"
-                          >${{ item.price }}</span
+                          >₱{{ item.price }}</span
                         >
                       </div>
                     </div>
@@ -132,10 +131,10 @@
                     <div class="relative mx-auto">
                       <Image
                         imageClass="border-round w-full"
-                        :src="`/layout/images/${item.image}`"
+                        :src="`${apiUrl}/storage/room-images/${item.image}`"
                         :alt="item.description"
-                        imageStyle="max-width: 300px max-height: 50px;"
                         preview
+                        style="width: 280px; height: 265px"
                       />
                       <Tag
                         :value="item.availability === 0 ? 'Occupied' : 'Vacant'"
@@ -160,12 +159,13 @@
                           >Capacity: {{ item.capacity }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
-                          >Type: {{ item.type }}</span
+                          >Type:
+                          {{ item.type === 1 ? "Standard" : "Premium" }}</span
                         >
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
                         <span class="text-2xl font-semibold text-900"
-                          >${{ item.price }}</span
+                          >₱{{ item.price }}</span
                         >
                       </div>
                     </div>
@@ -228,11 +228,9 @@ export default {
       dataviewValue: null,
       layout: "grid",
       sortKey: null,
-      sortOrder: null,
-      sortField: null,
       sortOptions: [
-        { label: "Standard", value: "!type" },
-        { label: "Premium", value: "type" },
+        { label: "Standard", value: 1 },
+        { label: "Premium", value: 2 },
         { label: "Reset", value: "reset" },
       ],
       displayAddDialog: false,
@@ -241,14 +239,16 @@ export default {
       roomService: new RoomService(),
       formData: this.getInitialFormData(),
       typeValues: [
-        { label: "Standard", value: "Standard" },
-        { label: "Premium", value: "Premium" },
+        { label: "Standard", value: 1 },
+        { label: "Premium", value: 2 },
       ],
+      apiUrl: import.meta.env.VITE_API_URL,
     };
   },
   methods: {
     getInitialFormData() {
       return {
+        image: null,
         room: null,
         description: null,
         capacity: null,
@@ -259,18 +259,14 @@ export default {
     },
     onSortChange(event) {
       const value = event.value.value;
-      const sortValue = event.value;
+      const rooms = this.getData.rooms;
 
       if (value === "reset") {
-        this.sortOrder = this.sortField = this.sortKey = null;
-      } else if (value.indexOf("!") === 0) {
-        this.sortOrder = -1;
-        this.sortField = value.substring(1, value.length);
-        this.sortKey = sortValue;
+        this.dataviewValue = rooms;
+        this.sortKey = null;
       } else {
-        this.sortOrder = 1;
-        this.sortField = value;
-        this.sortKey = sortValue;
+        const type = value === 1 ? 1 : 2;
+        this.dataviewValue = rooms.filter((item) => item.type === type);
       }
     },
     getSeverity(room) {
@@ -291,17 +287,28 @@ export default {
     openDeleteDialog(editData) {
       this.formData = editData;
       this.displayDeleteDialog = true;
-      console.log(this.formData);
     },
     closeDialog() {
       this.displayAddDialog =
         this.displayUpdateDialog =
         this.displayDeleteDialog =
           false;
+
+      this.getRooms();
+    },
+    async getRooms() {
+      await this.$store.dispatch("roomModule/getRooms");
+
+      this.dataviewValue = this.getData.rooms;
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["roomModule/data"];
     },
   },
   mounted() {
-    this.roomService.getRooms().then((data) => (this.dataviewValue = data));
+    this.getRooms();
   },
 };
 </script>

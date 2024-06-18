@@ -43,6 +43,7 @@
               v-model="formData.email"
               :invalid="submitted && !formData.email"
               :required="true"
+              :disabled="isDisabled"
             />
 
             <label
@@ -67,6 +68,7 @@
               v-model="formData.password"
               :invalid="submitted && !formData.password"
               :required="true"
+              :disabled="isDisabled"
             ></Password>
 
             <div
@@ -86,6 +88,17 @@
           </div>
         </div>
       </div>
+
+      <div
+        style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        "
+      >
+        <ProgressSpinner v-if="isShowLoadingCircle" />
+      </div>
     </div>
   </div>
   <AppConfig simple />
@@ -103,6 +116,8 @@ export default {
     return {
       formData: this.getInitialFormData(),
       submitted: false,
+      isShowLoadingCircle: false,
+      isDisabled: false,
     };
   },
   methods: {
@@ -114,9 +129,13 @@ export default {
     },
     async submit() {
       this.submitted = true;
+      this.isShowLoadingCircle = true;
+      this.isDisabled = true;
 
       if (!this.formData.email || !this.formData.password) {
         return;
+        this.isShowLoadingCircle = false;
+        this.isDisabled = false;
       }
 
       await this.$store.dispatch("authModule/login", this.formData);
@@ -131,6 +150,9 @@ export default {
           life: 3000,
         });
       }
+
+      this.isShowLoadingCircle = false;
+      this.isDisabled = false;
     },
   },
   computed: {
