@@ -134,7 +134,7 @@
                         :src="`${apiUrl}/storage/room-images/${item.image}`"
                         :alt="item.description"
                         preview
-                        style="width: 280px; height: 265px"
+                        style=" width: 100%; max-width: 22rem; height: 265px; object-fit: cover;"
                       />
                       <Tag
                         :value="item.availability === 0 ? 'Occupied' : 'Vacant'"
