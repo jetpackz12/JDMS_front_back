@@ -9,11 +9,12 @@
       <label for="room" class="mb-3">Room</label>
       <Dropdown
         id="room"
-        v-model.lazy="formData.room"
+        v-model.lazy="formData.room_id"
         :options="formData.rooms"
         optionLabel="label"
         optionValue="value"
         placeholder="Select room"
+        :disabled="formData.isDisabled"
       >
       </Dropdown>
     </div>
@@ -23,6 +24,7 @@
         id="first_name"
         v-model.lazy.trim="formData.first_name"
         required="true"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field">
@@ -31,6 +33,7 @@
         id="middle_name"
         v-model.lazy.trim="formData.middle_name"
         required="true"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field">
@@ -39,6 +42,7 @@
         id="last_name"
         v-model.lazy.trim="formData.last_name"
         required="true"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field">
@@ -47,6 +51,7 @@
         id="address"
         v-model.lazy.trim="formData.address"
         required="true"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field">
@@ -57,6 +62,7 @@
         mask="(999) 999-9999"
         placeholder="(999) 999-9999"
         required="true"
+        :disabled="formData.isDisabled"
       />
     </div>
 
@@ -66,8 +72,9 @@
         <InputNumber
           id="duration"
           v-model.lazy="formData.duration"
-          inputId="withoutgrouping" 
+          inputId="withoutgrouping"
           :useGrouping="false"
+          :disabled="formData.isDisabled"
         />
       </div>
       <div class="field col">
@@ -78,19 +85,41 @@
           mode="currency"
           currency="PHP"
           locale="en-US"
+          :disabled="formData.isDisabled"
         />
       </div>
     </div>
     <template #footer>
-      <Button label="Cancel" icon="pi pi-times" text="" @click="hideDialog()" />
-      <Button label="Save" icon="pi pi-check" text="" @click="submit()" />
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        text=""
+        @click="hideDialog()"
+        :disabled="formData.isDisabled"
+      />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        text=""
+        @click="submit()"
+        :disabled="formData.isDisabled"
+      />
     </template>
+
+    <div
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+    >
+      <ProgressSpinner v-if="formData.isShowLoadingCircle" />
+    </div>
   </Dialog>
 </template>
 
 <script>
-import { useToast } from "primevue/usetoast";
-
 export default {
   props: {
     formData: {
@@ -100,21 +129,42 @@ export default {
   },
   emits: ["formSubmit", "hideDialog"],
   methods: {
-    submit() {
-      this.$toast.add({
-        severity: "success",
-        summary: "Adding Guest",
-        detail: "You have successfully add new guest.",
-        life: 3000,
-      });
-      this.$emit("formSubmit");
+    async submit() {
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
+
+      await this.$store.dispatch("guestModule/storeData", this.formData);
+
+      if (this.isSuccess) {
+        this.$toast.add({
+          severity: "success",
+          summary: "Success",
+          detail: this.message,
+          life: 3000,
+        });
+        this.$emit("formSubmit");
+      } else {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: this.message,
+          life: 3000,
+        });
+      }
+      this.formData.isShowLoadingCircle = false;
+      this.formData.isDisabled = false;
     },
     hideDialog() {
       this.$emit("hideDialog");
     },
   },
-  mounted() {
-    this.$toast = useToast();
+  computed: {
+    isSuccess() {
+      return this.$store.getters["guestModule/isSuccess"];
+    },
+    message() {
+      return this.$store.getters["guestModule/message"];
+    },
   },
 };
 </script>

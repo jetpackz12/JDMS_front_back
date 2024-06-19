@@ -10,8 +10,20 @@
       >
     </div>
     <template #footer>
-      <Button label="No" icon="pi pi-times" text @click="hideDialog()" />
-      <Button label="Yes" icon="pi pi-check" text @click="submit()" />
+      <Button
+        label="No"
+        icon="pi pi-times"
+        text
+        @click="hideDialog()"
+        :disabled="formData.isDisabled"
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        text
+        @click="submit()"
+        :disabled="formData.isDisabled"
+      />
     </template>
 
     <div

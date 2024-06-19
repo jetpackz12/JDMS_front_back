@@ -10,15 +10,36 @@
       >
     </div>
     <template #footer>
-      <Button label="No" icon="pi pi-times" text @click="hideDialog()" />
-      <Button label="Yes" icon="pi pi-check" text @click="submit()" />
+      <Button
+        label="No"
+        icon="pi pi-times"
+        text
+        @click="hideDialog()"
+        :disabled="formData.isDisabled"
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        text
+        @click="submit()"
+        :disabled="formData.isDisabled"
+      />
     </template>
+
+    <div
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+    >
+      <ProgressSpinner v-if="formData.isShowLoadingCircle" />
+    </div>
   </Dialog>
 </template>
 
 <script>
-import { useToast } from "primevue/usetoast";
-
 export default {
   props: {
     formData: {
@@ -28,21 +49,42 @@ export default {
   },
   emits: ["formSubmit", "hideDialog"],
   methods: {
-    submit() {
-      this.$toast.add({
-        severity: "success",
-        summary: "Deleting Guests",
-        detail: "You have successfully delete this guests.",
-        life: 3000,
-      });
-      this.$emit("formSubmit");
+    async submit() {
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
+
+      await this.$store.dispatch("guestModule/deleteDatas", this.formData);
+
+      if (this.isSuccess) {
+        this.$toast.add({
+          severity: "success",
+          summary: "Success",
+          detail: this.message,
+          life: 3000,
+        });
+        this.$emit("formSubmit");
+      } else {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: this.message,
+          life: 3000,
+        });
+      }
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
     },
     hideDialog() {
       this.$emit("hideDialog");
     },
   },
-  mounted() {
-    this.$toast = useToast();
+  computed: {
+    isSuccess() {
+      return this.$store.getters["guestModule/isSuccess"];
+    },
+    message() {
+      return this.$store.getters["guestModule/message"];
+    },
   },
 };
 </script>

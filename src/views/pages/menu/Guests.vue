@@ -124,7 +124,7 @@
               </template>
             </Column>
             <Column
-              field="status"
+              field="statusName"
               header="Status"
               :sortable="true"
               headerStyle="width:14%; min-width:10rem;"
@@ -132,7 +132,7 @@
               <template #body="slotProps">
                 <span class="p-column-title">Status</span>
                 <Tag :severity="getBadgeSeverity(slotProps.data.status)">{{
-                  slotProps.data.status === 1 ? "Active" : "Inactive"
+                  slotProps.data.statusName
                 }}</Tag>
               </template>
             </Column>
@@ -210,11 +210,7 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
-      rooms: [
-        { label: "1", value: "1" },
-        { label: "2", value: "2" },
-        { label: "3", value: "3" },
-      ],
+      rooms: [],
     };
   },
   methods: {
@@ -229,6 +225,8 @@ export default {
         contact_number: null,
         duration: null,
         payment: null,
+        isShowLoadingCircle: false,
+        isDisabled: false,
       };
     },
     getBadgeSeverity(dataStatus) {
@@ -246,6 +244,10 @@ export default {
     },
     openUpdateDialog(editdata) {
       this.displayUpdateDialog = true;
+      this.rooms = [
+        ...this.rooms,
+        { label: editdata.room, value: editdata.room_id },
+      ];
       this.formData = { ...editdata, rooms: this.rooms };
     },
     openDeleteDataDialog(editdata) {
@@ -253,7 +255,7 @@ export default {
       this.displayDeleteDataDialog = true;
     },
     confirmDeleteSelected() {
-      this.formData = this.selectedDatas;
+      this.formData = this.selectedDatas.map((item) => item.id);
       this.displayDeleteDatasDialog = true;
     },
     closeDialog() {
@@ -262,6 +264,9 @@ export default {
         this.displayDeleteDataDialog =
         this.displayDeleteDatasDialog =
           false;
+      this.selectedDatas = null;
+
+      this.getGuests();
     },
     printTable() {
       let contents = document.getElementById("printable").innerHTML;
@@ -334,26 +339,41 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       };
     },
-  },
-  created() {
-    this.initFilters();
-    const guestService = new GuestService();
-    guestService
-      .getGuests()
-      .then((data) => {
-        this.datas = data.filter((item) => {
-          return item.status === 1;
-        });
-        this.datas = this.datas.map((item) => {
-          return { ...item, duration: item.duration + " Hour" };
-        });
-      })
-      .finally(() => {
+    async getGuests() {
+      await this.$store.dispatch("guestModule/getGuests");
+
+      this.datas = this.getData.guests
+        .filter((item) => item.status === 1)
+        .map((item) => ({
+          ...item,
+          statusName: item.status === 1 ? "Active" : "Inactive",
+          duration: item.duration + " Hour"
+        }));
+
+      this.rooms = this.getData.rooms
+        .filter((item) => item.availability === 1 && item.status === 1)
+        .map((item) => ({
+          label: item.room,
+          value: item.id,
+        }));
+
+      if (this.isSuccess) {
         this.isShowLoading = false;
-      });
+      }
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["guestModule/data"];
+    },
+    isSuccess() {
+      return this.$store.getters["guestModule/isSuccess"];
+    },
   },
   mounted() {
     this.$toast = useToast();
+    this.initFilters();
+    this.getGuests();
   },
 };
 </script>
