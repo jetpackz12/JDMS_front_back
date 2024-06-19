@@ -23,8 +23,8 @@
               <Column field="full_name" header="Name"></Column>
               <Column field="address" header="Address"></Column>
               <Column field="contact_number" header="Number"></Column>
-              <Column field="month_deposit" header="Deposit"></Column>
-              <Column field="month_advance" header="Advance"></Column>
+              <Column field="deposit" header="Deposit"></Column>
+              <Column field="advance" header="Advance"></Column>
             </DataTable>
           </div>
 
@@ -102,29 +102,29 @@
               </template>
             </Column>
             <Column
-              field="month_deposit"
+              field="deposit"
               header="Deposit"
               :sortable="true"
               headerStyle="width:14%; min-width:8rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Deposit</span>
-                {{ formatCurrency(slotProps.data.month_deposit) }}
+                {{ formatCurrency(slotProps.data.deposit) }}
               </template>
             </Column>
             <Column
-              field="month_advance"
+              field="advance"
               header="Advance"
               :sortable="true"
               headerStyle="width:14%; min-width:8rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Advance</span>
-                {{ formatCurrency(slotProps.data.month_advance) }}
+                {{ formatCurrency(slotProps.data.advance) }}
               </template>
             </Column>
             <Column
-              field="status"
+              field="statusName"
               header="Status"
               :sortable="true"
               headerStyle="width:14%; min-width:10rem;"
@@ -132,7 +132,7 @@
               <template #body="slotProps">
                 <span class="p-column-title">Status</span>
                 <Tag :severity="getBadgeSeverity(slotProps.data.status)">{{
-                  slotProps.data.status === 1 ? "Active" : "Inactive"
+                  slotProps.data.statusName
                 }}</Tag>
               </template>
             </Column>
@@ -210,25 +210,23 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
-      rooms: [
-        { label: "1", value: "1" },
-        { label: "2", value: "2" },
-        { label: "3", value: "3" },
-      ],
+      rooms: [],
     };
   },
   methods: {
     getInitialFormData() {
       return {
         rooms: this.rooms,
-        room: null,
+        room_id: null,
         first_name: null,
         middle_name: null,
         last_name: null,
         address: null,
         contact_number: null,
-        month_deposit: null,
-        month_advance: null,
+        deposit: null,
+        advance: null,
+        isShowLoadingCircle: false,
+        isDisabled: false,
       };
     },
     getBadgeSeverity(dataStatus) {
@@ -246,6 +244,10 @@ export default {
     },
     openUpdateDialog(editdata) {
       this.displayUpdateDialog = true;
+      this.rooms = [
+        ...this.rooms,
+        { label: editdata.room, value: editdata.room_id },
+      ];
       this.formData = { ...editdata, rooms: this.rooms };
     },
     openDeleteDataDialog(editdata) {
@@ -253,7 +255,7 @@ export default {
       this.displayDeleteDataDialog = true;
     },
     confirmDeleteSelected() {
-      this.formData = this.selectedDatas;
+      this.formData = this.selectedDatas.map((item) => item.id);
       this.displayDeleteDatasDialog = true;
     },
     closeDialog() {
@@ -263,6 +265,9 @@ export default {
         this.displayDeleteDataDialog =
         this.displayDeleteDatasDialog =
           false;
+      this.selectedDatas = null;
+
+      this.getTenants();
     },
     printTable() {
       let contents = document.getElementById("printable").innerHTML;
@@ -316,8 +321,8 @@ export default {
         data.full_name,
         data.address,
         data.contact_number,
-        data.month_deposit,
-        data.month_advance,
+        data.deposit,
+        data.advance,
       ]);
 
       doc.autoTable({
@@ -335,23 +340,40 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       };
     },
-  },
-  created() {
-    this.initFilters();
-    const tenantService = new TenantService();
-    tenantService
-      .getTenants()
-      .then((data) => {
-        this.datas = data.filter((item) => {
-          return item.status === 1;
-        });
-      })
-      .finally(() => {
+    async getTenants() {
+      await this.$store.dispatch("tenantModule/getTenants");
+
+      this.datas = this.getData.tenants
+        .filter((item) => item.status === 1)
+        .map((item) => ({
+          ...item,
+          statusName: item.status === 1 ? "Active" : "Inactive",
+        }));
+
+      this.rooms = this.getData.rooms
+        .filter((item) => item.availability === 1 && item.status === 1)
+        .map((item) => ({
+          label: item.room,
+          value: item.id,
+        }));
+
+      if (this.isSuccess) {
         this.isShowLoading = false;
-      });
+      }
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["tenantModule/data"];
+    },
+    isSuccess() {
+      return this.$store.getters["tenantModule/isSuccess"];
+    },
   },
   mounted() {
     this.$toast = useToast();
+    this.initFilters();
+    this.getTenants();
   },
 };
 </script>
