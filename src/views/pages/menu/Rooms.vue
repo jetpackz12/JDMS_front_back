@@ -255,6 +255,8 @@ export default {
         typeValues: this.typeValues,
         type: null,
         price: null,
+        isShowLoadingCircle: false,
+        isDisabled: false,
       };
     },
     onSortChange(event) {

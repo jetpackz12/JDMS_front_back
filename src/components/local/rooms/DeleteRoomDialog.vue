@@ -12,9 +12,32 @@
       >
     </div>
     <template #footer>
-      <Button label="No" icon="pi pi-times" text @click="hideDialog()" />
-      <Button label="Yes" icon="pi pi-check" text @click="submit()" />
+      <Button
+        label="No"
+        icon="pi pi-times"
+        text
+        @click="hideDialog()"
+        :disabled="formData.isDisabled"
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        text
+        @click="submit()"
+        :disabled="formData.isDisabled"
+      />
     </template>
+
+    <div
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+    >
+      <ProgressSpinner v-if="formData.isShowLoadingCircle" />
+    </div>
   </Dialog>
 </template>
 
@@ -32,6 +55,9 @@ export default {
       this.$emit("formSubmit");
     },
     async submit() {
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
+
       await this.$store.dispatch("roomModule/deleteData", this.formData);
 
       if (this.isSuccess) {
@@ -50,6 +76,8 @@ export default {
           life: 3000,
         });
       }
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
     },
   },
   computed: {

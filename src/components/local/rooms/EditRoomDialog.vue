@@ -32,11 +32,17 @@
         :auto="true"
         chooseLabel="Select image"
         class="w-10rem sm:w-14rem lg:w-18rem"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field flex flex-column">
       <label for="room">Room</label>
-      <InputText v-model.lazy.trim="formData.room" id="room" type="text" />
+      <InputText
+        v-model.lazy.trim="formData.room"
+        id="room"
+        type="text"
+        :disabled="formData.isDisabled"
+      />
     </div>
     <div class="field flex flex-column">
       <label for="description">Description</label>
@@ -44,6 +50,7 @@
         v-model.lazy.trim="formData.description"
         id="description"
         type="text"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field flex flex-column">
@@ -53,6 +60,7 @@
         inputId="withoutgrouping"
         :useGrouping="false"
         id="capacity"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field flex flex-column">
@@ -64,6 +72,7 @@
         optionLabel="label"
         optionValue="value"
         placeholder="Select"
+        :disabled="formData.isDisabled"
       />
     </div>
     <div class="field flex flex-column">
@@ -72,12 +81,36 @@
         v-model.lazy="formData.price"
         inputId="integeronly"
         id="price"
+        :disabled="formData.isDisabled"
       />
     </div>
     <template #footer>
-      <Button label="Cancel" icon="pi pi-times" text="" @click="hideDialog()" />
-      <Button label="Save" icon="pi pi-check" text="" @click="submit()" />
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        text=""
+        @click="hideDialog()"
+        :disabled="formData.isDisabled"
+      />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        text=""
+        @click="submit()"
+        :disabled="formData.isDisabled"
+      />
     </template>
+
+    <div
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+    >
+      <ProgressSpinner v-if="formData.isShowLoadingCircle" />
+    </div>
   </Dialog>
 </template>
 
@@ -100,6 +133,9 @@ export default {
       this.$emit("formSubmit");
     },
     async submit() {
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
+
       await this.$store.dispatch("roomModule/updateData", this.formData);
 
       if (this.isSuccess) {
@@ -118,6 +154,8 @@ export default {
           life: 3000,
         });
       }
+      this.formData.isShowLoadingCircle = true;
+      this.formData.isDisabled = true;
     },
     async onUpload(event) {
       await this.$store.dispatch("roomModule/uploadImage", event.files[0]);
