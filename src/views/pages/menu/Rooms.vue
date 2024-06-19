@@ -23,13 +23,26 @@
         >
           <template #header>
             <div class="grid grid-nogutter">
-              <div class="col-6 text-left">
+              <div class="col-6 text-left flex gap-1">
                 <Dropdown
                   v-model="sortKey"
                   :options="sortOptions"
                   optionLabel="label"
                   placeholder="Sort By Type"
                   @change="onSortChange($event)"
+                />
+                <Dropdown
+                  v-model="sortAvailabilityKey"
+                  :options="sortAvailabilityOptions"
+                  optionLabel="label"
+                  placeholder="Sort By Availability"
+                  @change="onSortAvailabilityChange($event)"
+                />
+                <Button
+                  type="button"
+                  label="Filter"
+                  icon="pi pi-filter"
+                  @click="onSortFilter()"
                 />
               </div>
               <div class="col-6 text-right">
@@ -134,7 +147,12 @@
                         :src="`${apiUrl}/storage/room-images/${item.image}`"
                         :alt="item.description"
                         preview
-                        style=" width: 100%; max-width: 22rem; height: 265px; object-fit: cover;"
+                        style="
+                          width: 100%;
+                          max-width: 22rem;
+                          height: 300px;
+                          object-fit: cover;
+                        "
                       />
                       <Tag
                         :value="item.availability === 0 ? 'Occupied' : 'Vacant'"
@@ -233,6 +251,12 @@ export default {
         { label: "Premium", value: 2 },
         { label: "Reset", value: "reset" },
       ],
+      sortAvailabilityKey: null,
+      sortAvailabilityOptions: [
+        { label: "Occupied", value: 0 },
+        { label: "Vacant", value: 1 },
+        { label: "Reset", value: "reset" },
+      ],
       displayAddDialog: false,
       displayUpdateDialog: false,
       displayDeleteDialog: false,
@@ -265,10 +289,34 @@ export default {
 
       if (value === "reset") {
         this.dataviewValue = rooms;
+        this.sortAvailabilityKey = null;
         this.sortKey = null;
-      } else {
-        const type = value === 1 ? 1 : 2;
+      }
+    },
+    onSortFilter() {
+      const rooms = this.getData.rooms;
+      const type = this.sortKey?.value ?? null;
+      const availability = this.sortAvailabilityKey?.value ?? null;
+
+      if (availability === "reset") {
         this.dataviewValue = rooms.filter((item) => item.type === type);
+        return;
+      }
+
+      if (type !== null || availability !== null) {
+        this.dataviewValue = rooms.filter((item) => {
+          const matchesType = type !== null ? item.type === type : true;
+          const matchesAvailability =
+            availability !== null ? item.availability === availability : true;
+          return matchesType && matchesAvailability;
+        });
+      } else {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Please choose the filtering option.",
+          life: 3000,
+        });
       }
     },
     getSeverity(room) {
