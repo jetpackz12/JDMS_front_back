@@ -69,6 +69,7 @@
               :invalid="submitted && !formData.password"
               :required="true"
               :disabled="isDisabled"
+              @keydown.enter="submit()"
             ></Password>
 
             <div
@@ -77,6 +78,7 @@
               <a
                 class="font-medium no-underline ml-2 text-right cursor-pointer"
                 style="color: var(--primary-color)"
+                :disabled="isDisabled"
                 >Forgot password?</a
               >
             </div>
@@ -84,6 +86,7 @@
               label="Sign In"
               class="w-full p-3 text-xl"
               @click="submit()"
+              :disabled="isDisabled"
             ></Button>
           </div>
         </div>
