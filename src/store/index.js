@@ -4,6 +4,7 @@ import changePasswordModule from "./change-password";
 import roomModule from "./room";
 import tenantModule from "./tenant";
 import guestModule from "./guest";
+import waterBillingPaymentModule from "./water-billing-payment";
 
 const store = createStore({
   modules: {
@@ -11,7 +12,8 @@ const store = createStore({
     changePasswordModule,
     roomModule,
     tenantModule,
-    guestModule
+    guestModule,
+    waterBillingPaymentModule,
   },
 });
 
