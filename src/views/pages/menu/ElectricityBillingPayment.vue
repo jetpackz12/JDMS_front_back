@@ -97,7 +97,7 @@
             >
               <template #body="slotProps">
                 <span class="p-column-title">Amount</span>
-                {{ formatCurrency(slotProps.data.amount) }}
+                {{ formatCurrency(parseInt(slotProps.data.amount)) }}
               </template>
             </Column>
             <Column
@@ -154,8 +154,8 @@
         <FilterElectricityPaymentDialog
           v-model:visible="displayFilterDialog"
           :formData="formData"
-          @formSubmit="closeDialog()"
-          @hideDialog="closeDialog()"
+          @formSubmit="closeDialogFilter()"
+          @hideDialog="closeDialogFilter()"
         />
       </div>
     </div>
@@ -181,12 +181,7 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
-      tenants: [
-        { label: "Dummy1 Dummy1 Dummy1", value: "Dummy1 Dummy1 Dummy1" },
-        { label: "Dummy2 Dummy2 Dummy2", value: "Dummy2 Dummy2 Dummy2" },
-        { label: "Dummy3 Dummy3 Dummy3", value: "Dummy3 Dummy3 Dummy3" },
-        { label: "Dummy4 Dummy4 Dummy4", value: "Dummy4 Dummy4 Dummy4" },
-      ],
+      tenants: [],
     };
   },
   methods: {
@@ -199,6 +194,8 @@ export default {
         amount: null,
         due_date: null,
         date_issue: null,
+        isShowLoadingCircle: false,
+        isDisabled: false,
       };
     },
     getBadgeSeverity(dataStatus) {
@@ -210,23 +207,47 @@ export default {
         currency: "PHP",
       });
     },
+    formatDate(value) {
+      const date = new Date(value);
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Intl.DateTimeFormat("en-US", options).format(date);
+    },
+    originalFormatDate(value) {
+      let date = new Date(value);
+
+      let month = (date.getMonth() + 1).toString().padStart(2, "0");
+      let day = date.getDate().toString().padStart(2, "0");
+      let year = date.getFullYear();
+
+      return `${month}/${day}/${year}`;
+    },
     openAddDialog() {
       this.displayAddDialog = true;
       this.formData = this.getInitialFormData();
     },
     openUpdateDialog(editdata) {
       this.displayUpdateDialog = true;
-      this.formData = { ...editdata, tenants: this.tenants };
+
+      this.formData = {
+        ...editdata,
+        due_date: this.originalFormatDate(editdata.due_date),
+        date_issue: this.originalFormatDate(editdata.date_issue),
+        tenants: this.tenants,
+      };
     },
     openFilterDialog() {
       this.displayFilterDialog = true;
       this.formData = this.getInitialFormData();
     },
     closeDialog() {
-      this.displayAddDialog =
-        this.displayUpdateDialog =
-        this.displayFilterDialog =
-          false;
+      this.displayAddDialog = this.displayUpdateDialog = false;
+
+      this.getElectricityBillingPayments();
+    },
+    closeDialogFilter() {
+      this.displayFilterDialog = false;
+
+      this.getElectricityBillingPaymentData();
     },
     printTable() {
       let contents = document.getElementById("printable").innerHTML;
@@ -291,22 +312,46 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       };
     },
-  },
-  created() {
-    this.initFilters();
-    const electricityBillingPaymentService =
-      new ElectricityBillingPaymentService();
-    electricityBillingPaymentService
-      .getElectricityBillingPayments()
-      .then((data) => {
-        this.datas = data;
-      })
-      .finally(() => {
-        this.isShowLoading = false;
+    async getElectricityBillingPayments() {
+      await this.$store.dispatch(
+        "electricityBillingPaymentModule/getElectricityBillingPayments"
+      );
+
+      this.getElectricityBillingPaymentData();
+    },
+    getElectricityBillingPaymentData() {
+      this.datas = this.getData.electricityBillingPayment.map((item) => {
+        return {
+          ...item,
+          due_date: this.formatDate(item.due_date),
+          date_issue: this.formatDate(item.date_issue),
+        };
       });
+
+      this.tenants = this.getData.tenants
+        .filter((item) => item.status === 1)
+        .map((item) => ({
+          label: item.full_name,
+          value: item.id,
+        }));
+
+      if (this.isSuccess) {
+        this.isShowLoading = false;
+      }
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["electricityBillingPaymentModule/data"];
+    },
+    isSuccess() {
+      return this.$store.getters["electricityBillingPaymentModule/isSuccess"];
+    },
   },
   mounted() {
     this.$toast = useToast();
+    this.initFilters();
+    this.getElectricityBillingPayments();
   },
 };
 </script>
