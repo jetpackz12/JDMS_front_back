@@ -109,7 +109,7 @@
             >
               <template #body="slotProps">
                 <span class="p-column-title">Deposit</span>
-                {{ formatCurrency(slotProps.data.deposit) }}
+                {{ formatCurrency(parseInt(slotProps.data.deposit)) }}
               </template>
             </Column>
             <Column
@@ -120,7 +120,7 @@
             >
               <template #body="slotProps">
                 <span class="p-column-title">Advance</span>
-                {{ formatCurrency(slotProps.data.advance) }}
+                {{ formatCurrency(parseInt(slotProps.data.advance)) }}
               </template>
             </Column>
             <Column

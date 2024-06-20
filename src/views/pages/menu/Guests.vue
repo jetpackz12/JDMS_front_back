@@ -120,7 +120,7 @@
             >
               <template #body="slotProps">
                 <span class="p-column-title">Payment</span>
-                {{ formatCurrency(slotProps.data.payment) }}
+                {{ formatCurrency(parseInt(slotProps.data.payment)) }}
               </template>
             </Column>
             <Column
