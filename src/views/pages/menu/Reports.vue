@@ -116,8 +116,9 @@ export default {
       filters: {},
       formData: this.getInitialFormData(),
       transactions: [
-        { label: "Water Billing Payment", value: "1" },
-        { label: "Electricity Billing Payment", value: "2" },
+        { label: "Water Billing Payment", value: 1 },
+        { label: "Electricity Billing Payment", value: 2 },
+        { label: "Both Billing Payment", value: 0 },
       ],
     };
   },
@@ -127,6 +128,8 @@ export default {
         transactions: this.transactions,
         transaction: null,
         date: null,
+        isShowLoadingCircle: false,
+        isDisabled: false,
       };
     },
     openFilterDialog() {
@@ -135,6 +138,19 @@ export default {
     },
     closeDialog() {
       this.displayFilterDialog = false;
+
+      this.getReportData();
+    },
+    formatCurrency(value) {
+      return value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "PHP",
+      });
+    },
+    formatDate(value) {
+      const date = new Date(value);
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Intl.DateTimeFormat("en-US", options).format(date);
     },
     printTable() {
       let contents = document.getElementById("printable").innerHTML;
@@ -197,53 +213,63 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       };
     },
-  },
-  created() {
-    this.initFilters();
-    const reportService = new ReportService();
-    reportService
-      .getReports()
-      .then((data) => {
-        this.datas = data.map((item) => {
-          let data = {};
-          if (item.transaction === "1") {
-            data = {
-              ...item,
-              transaction: "Water Billing Payment",
-              description: [
-                `Room: ${item.description.room}`,
-                `Tenant: ${item.description.tenant}`,
-                `Previous Reading: ${item.description.prev_read}`,
-                `Present Reading: ${item.description.pres_read}`,
-                `Amount: ${item.description.amount}`,
-                `Due Date: ${item.description.due_date}`,
-                `Date Issue: ${item.description.date_issue}`,
-              ].join(", "),
-            };
-          } else {
-            data = {
-              ...item,
-              transaction: "Electricity Billing Payment",
-              description: [
-                `Room:  ${item.description.room}`,
-                `Tenant: ${item.description.tenant}`,
-                `Unit Consumed: ${item.description.unit_con}`,
-                `Amount: ${item.description.amount}`,
-                `Due Date: ${item.description.due_date}`,
-                `Date Issue: ${item.description.date_issue}`,
-              ].join(", "),
-            };
-          }
+    async getReports() {
+      await this.$store.dispatch("reportModule/getReports");
 
-          return data;
-        });
-      })
-      .finally(() => {
-        this.isShowLoading = false;
+      this.getReportData();
+    },
+    getReportData() {
+      this.datas = this.getData.reports.map((item) => {
+        let data = {};
+        if (item.transaction === 1) {
+          data = {
+            transaction: "Water Billing Payment",
+            description: [
+              `Room: ${item.description.room}`,
+              `Tenant: ${item.description.tenant}`,
+              `Previous Reading: ${item.description.prev_read}`,
+              `Present Reading: ${item.description.pres_read}`,
+              `Amount: ${item.description.amount}`,
+              `Due Date: ${this.formatDate(item.description.due_date)}`,
+              `Date Issue: ${this.formatDate(item.description.date_issue)}`,
+            ].join(", "),
+            date: this.formatDate(item.created_at)
+          };
+        } else {
+          data = {
+            transaction: "Electricity Billing Payment",
+            description: [
+              `Room:  ${item.description.room}`,
+              `Tenant: ${item.description.tenant}`,
+              `Unit Consumed: ${item.description.unit_con}`,
+              `Amount: ${item.description.amount}`,
+              `Due Date: ${this.formatDate(item.description.due_date)}`,
+              `Date Issue: ${this.formatDate(item.description.date_issue)}`,
+            ].join(", "),
+            date: this.formatDate(item.created_at)
+          };
+        }
+
+        return data;
       });
+
+      if (this.isSuccess) {
+        this.isShowLoading = false;
+      }
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["reportModule/data"];
+    },
+    isSuccess() {
+      return this.$store.getters["reportModule/isSuccess"];
+    },
   },
   mounted() {
     this.$toast = useToast();
+    this.initFilters();
+    this.getReports();
   },
 };
 </script>
