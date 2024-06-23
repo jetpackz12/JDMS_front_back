@@ -7,17 +7,19 @@ import guestModule from "./guest";
 import waterBillingPaymentModule from "./water-billing-payment";
 import electricityBillingPaymentModule from "./electricity-billing-payment";
 import reportModule from "./report";
+import homeModule from "./home";
 
 const store = createStore({
   modules: {
     authModule,
-    changePasswordModule,
+    homeModule,
     roomModule,
     tenantModule,
     guestModule,
     waterBillingPaymentModule,
     electricityBillingPaymentModule,
-    reportModule
+    reportModule,
+    changePasswordModule,
   },
 });
 

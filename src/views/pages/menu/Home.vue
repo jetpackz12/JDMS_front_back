@@ -2,12 +2,15 @@
   <div class="grid">
     <div class="col-12 lg:col-6 xl:col-3">
       <div class="card mb-0">
-        <div class="flex justify-content-between mb-3">
+        <Skeleton v-if="isShowLoading" height="5rem"></Skeleton>
+        <div v-else class="flex justify-content-between mb-3">
           <div>
             <span class="block text-500 font-medium mb-3"
-              >Total Room Available</span
+              >Total Room Vacant</span
             >
-            <div class="text-900 font-medium text-xl">152</div>
+            <div class="text-900 font-medium text-xl">
+              {{ renderData.vacantRooms }}
+            </div>
           </div>
           <div
             class="flex align-items-center justify-content-center bg-blue-100 border-round"
@@ -20,12 +23,15 @@
     </div>
     <div class="col-12 lg:col-6 xl:col-3">
       <div class="card mb-0">
-        <div class="flex justify-content-between mb-3">
+        <Skeleton v-if="isShowLoading" height="5rem"></Skeleton>
+        <div v-else class="flex justify-content-between mb-3">
           <div>
             <span class="block text-500 font-medium mb-3"
               >Total Room Occupied</span
             >
-            <div class="text-900 font-medium text-xl">152</div>
+            <div class="text-900 font-medium text-xl">
+              {{ renderData.occupiedRooms }}
+            </div>
           </div>
           <div
             class="flex align-items-center justify-content-center bg-orange-100 border-round"
@@ -38,10 +44,13 @@
     </div>
     <div class="col-12 lg:col-6 xl:col-3">
       <div class="card mb-0">
-        <div class="flex justify-content-between mb-3">
+        <Skeleton v-if="isShowLoading" height="5rem"></Skeleton>
+        <div v-else class="flex justify-content-between mb-3">
           <div>
             <span class="block text-500 font-medium mb-3">Total Tenants</span>
-            <div class="text-900 font-medium text-xl">28441</div>
+            <div class="text-900 font-medium text-xl">
+              {{ renderData.totalTenants }}
+            </div>
           </div>
           <div
             class="flex align-items-center justify-content-center bg-cyan-100 border-round"
@@ -54,10 +63,13 @@
     </div>
     <div class="col-12 lg:col-6 xl:col-3">
       <div class="card mb-0">
-        <div class="flex justify-content-between mb-3">
+        <Skeleton v-if="isShowLoading" height="5rem"></Skeleton>
+        <div v-else class="flex justify-content-between mb-3">
           <div>
             <span class="block text-500 font-medium mb-3">Total Guests</span>
-            <div class="text-900 font-medium text-xl">152</div>
+            <div class="text-900 font-medium text-xl">
+              {{ renderData.totalGuests }}
+            </div>
           </div>
           <div
             class="flex align-items-center justify-content-center bg-purple-100 border-round"
@@ -72,13 +84,15 @@
     <div class="col-12 xl:col-6">
       <div class="card">
         <h5>Customer Overview</h5>
-        <Chart type="line" :data="lineData" :options="lineOptions" />
+        <Skeleton v-if="isShowLoading" height="25rem"></Skeleton>
+        <Chart v-else type="line" :data="lineData" :options="lineOptions" />
       </div>
     </div>
     <div class="col-12 xl:col-6">
       <div class="card">
         <h5>Monthly Income Overview</h5>
-        <Chart type="bar" :data="barData" :options="barOptions" />
+        <Skeleton v-if="isShowLoading" height="25rem"></Skeleton>
+        <Chart v-else type="bar" :data="barData" :options="barOptions" />
       </div>
     </div>
   </div>
@@ -91,10 +105,21 @@ import { useLayout } from "@/layout/composables/layout";
 export default {
   data() {
     return {
+      renderData: {
+        vacantRooms: 0,
+        occupiedRooms: 0,
+        totalTenants: 0,
+        totalGuests: 0,
+        tenants: [],
+        guests: [],
+        waterBillingPayment: [],
+        electricityBillingPayment: [],
+      },
       lineData: null,
       barData: null,
       lineOptions: null,
       barOptions: null,
+      isShowLoading: true,
       layoutConfig: useLayout().layoutConfig,
       documentStyle: getComputedStyle(document.documentElement),
       textColor: getComputedStyle(document.documentElement).getPropertyValue(
@@ -107,19 +132,6 @@ export default {
         document.documentElement
       ).getPropertyValue("--surface-border"),
     };
-  },
-  created() {
-    this.setColorOptions();
-    this.setChart();
-
-    watch(
-      () => this.layoutConfig.theme,
-      () => {
-        this.setColorOptions();
-        this.setChart();
-      },
-      { immediate: true }
-    );
   },
   methods: {
     setColorOptions() {
@@ -141,21 +153,26 @@ export default {
           "May",
           "June",
           "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
         ],
         datasets: [
           {
-            label: "Last Year",
-            backgroundColor:
-              this.documentStyle.getPropertyValue("--primary-500"),
-            borderColor: this.documentStyle.getPropertyValue("--primary-500"),
-            data: [65, 59, 80, 81, 56, 55, 40],
-          },
-          {
-            label: "Current Year",
+            label: "Water Billing Payment",
             backgroundColor:
               this.documentStyle.getPropertyValue("--primary-200"),
             borderColor: this.documentStyle.getPropertyValue("--primary-200"),
-            data: [28, 48, 40, 19, 86, 27, 90],
+            data: this.renderData.waterBillingPayment,
+          },
+          {
+            label: "Electricity Billing Payment",
+            backgroundColor:
+              this.documentStyle.getPropertyValue("--primary-400"),
+            borderColor: this.documentStyle.getPropertyValue("--primary-400"),
+            data: this.renderData.electricityBillingPayment,
           },
         ],
       };
@@ -202,11 +219,16 @@ export default {
           "May",
           "June",
           "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
         ],
         datasets: [
           {
             label: "Tenants",
-            data: [65, 59, 80, 81, 56, 55, 40],
+            data: this.renderData.tenants,
             fill: false,
             backgroundColor:
               this.documentStyle.getPropertyValue("--primary-500"),
@@ -215,7 +237,7 @@ export default {
           },
           {
             label: "Guests",
-            data: [28, 48, 40, 19, 86, 27, 90],
+            data: this.renderData.guests,
             fill: false,
             backgroundColor:
               this.documentStyle.getPropertyValue("--primary-200"),
@@ -255,6 +277,68 @@ export default {
         },
       };
     },
+    async getHomeData() {
+      await this.$store.dispatch("homeModule/getHomeData");
+
+      this.renderData.vacantRooms = this.getData.vacantRooms;
+      this.renderData.occupiedRooms = this.getData.occupiedRooms;
+      this.renderData.totalTenants = this.getData.totalTenants;
+      this.renderData.totalGuests = this.getData.totalGuests;
+
+      this.renderData.tenants = this.getData.tenants.reduce((acc, item) => {
+        const createdDate = new Date(item.created_at);
+        const month = createdDate.getMonth();
+        acc[month]++;
+        return acc;
+      }, Array(12).fill(0));
+
+      this.renderData.guests = this.getData.guests.reduce((acc, item) => {
+        const createdDate = new Date(item.created_at);
+        const month = createdDate.getMonth();
+        acc[month]++;
+        return acc;
+      }, Array(12).fill(0));
+
+      this.renderData.waterBillingPayment = this.getData.waterBillingPayment.reduce((acc, item) => {
+        const createdDate = new Date(item.created_at);
+        const month = createdDate.getMonth();
+        acc[month] += parseInt(item.amount);
+        return acc;
+      }, Array(12).fill(0));
+
+      this.renderData.electricityBillingPayment = this.getData.electricityBillingPayment.reduce((acc, item) => {
+        const createdDate = new Date(item.created_at);
+        const month = createdDate.getMonth();
+        acc[month] += parseInt(item.amount);
+        return acc;
+      }, Array(12).fill(0));
+
+      if (this.isSuccess) {
+        this.isShowLoading = false;
+        this.setColorOptions();
+        this.setChart();
+
+        watch(
+          () => this.layoutConfig.theme,
+          () => {
+            this.setColorOptions();
+            this.setChart();
+          },
+          { immediate: true }
+        );
+      }
+    },
+  },
+  computed: {
+    getData() {
+      return this.$store.getters["homeModule/data"];
+    },
+    isSuccess() {
+      return this.$store.getters["homeModule/isSuccess"];
+    },
+  },
+  mounted() {
+    this.getHomeData();
   },
 };
 </script>
