@@ -6,7 +6,7 @@ const roomActions = {
     formData.append("image", uploadImage);
 
     await axiosInstance
-      .post("/api/v1/uploadImage", formData, {
+      .post("/api/v1/room/uploadImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

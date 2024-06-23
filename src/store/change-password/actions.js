@@ -6,7 +6,7 @@ const changePasswordActions = {
     const userId = store.getters["authModule/user"];
 
     await axiosInstance
-      .put(`/api/v1/changePassword/${userId.id}`, formData)
+      .put(`/api/v1/user/changePassword/${userId.id}`, formData)
       .then((response) => {
         commit("SET_MESSAGE_SUCCESS", response.data.message);
       })

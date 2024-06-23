@@ -15,7 +15,7 @@ const authActions = {
   async checkAuth({ commit }) {
     const token = { token: localStorage.getItem("token") };
     await axiosInstance
-      .post("/api/v1/checkAuth", token)
+      .post("/api/v1/user/checkAuth", token)
       .then((response) => {
         commit("SET_USER", response.data.resData.user);
       })
@@ -27,7 +27,7 @@ const authActions = {
   async logout({ commit }) {
     const token = { token: localStorage.getItem("token") };
     await axiosInstance
-      .post("/api/v1/logout", token)
+      .post("/api/v1/user/logout", token)
       .then((response) => {
         commit("LOGOUT");
         localStorage.setItem("token", null);
