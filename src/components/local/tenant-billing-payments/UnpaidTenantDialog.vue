@@ -1,12 +1,12 @@
 <template>
-  <Dialog :style="{ width: '450px' }" header="Payment Status" :modal="true">
+  <Dialog :style="{ width: '450px' }" header="Billing Status" :modal="true">
     <div class="flex align-items-center justify-content-center">
       <i
         class="pi pi-exclamation-triangle mr-3"
         style="font-size: 2rem; color: #f97316"
       />
       <span v-if="formData"
-        >Please confim this tenant <b>{{ formData.tenant }}</b> already paid.</span
+        >Please confim that the tenant <b>{{ formData.tenant }}</b> has already paid.</span
       >
     </div>
     <template #footer>
