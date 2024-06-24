@@ -65,30 +65,16 @@
         :disabled="formData.isDisabled"
       />
     </div>
-
-    <div class="formgrid grid">
-      <div class="field col">
-        <label for="deposit">Month Deposit</label>
-        <InputNumber
-          id="deposit"
-          v-model.lazy="formData.deposit"
-          mode="currency"
-          currency="PHP"
-          locale="en-US"
-          :disabled="formData.isDisabled"
-        />
-      </div>
-      <div class="field col">
-        <label for="advance">Month Advance</label>
-        <InputNumber
-          id="deposit"
-          v-model.lazy="formData.advance"
-          mode="currency"
-          currency="PHP"
-          locale="en-US"
-          :disabled="formData.isDisabled"
-        />
-      </div>
+    <div class="field">
+      <label for="advance">Month Advance</label>
+      <InputNumber
+        id="deposit"
+        v-model.lazy="formData.advance"
+        mode="currency"
+        currency="PHP"
+        locale="en-US"
+        :disabled="formData.isDisabled"
+      />
     </div>
     <template #footer>
       <Button

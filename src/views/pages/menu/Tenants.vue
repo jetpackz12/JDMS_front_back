@@ -102,17 +102,6 @@
               </template>
             </Column>
             <Column
-              field="deposit"
-              header="Deposit"
-              :sortable="true"
-              headerStyle="width:14%; min-width:8rem;"
-            >
-              <template #body="slotProps">
-                <span class="p-column-title">Deposit</span>
-                {{ formatCurrency(parseInt(slotProps.data.deposit)) }}
-              </template>
-            </Column>
-            <Column
               field="advance"
               header="Advance"
               :sortable="true"
@@ -223,7 +212,6 @@ export default {
         last_name: null,
         address: null,
         contact_number: null,
-        deposit: null,
         advance: null,
         isShowLoadingCircle: false,
         isDisabled: false,
