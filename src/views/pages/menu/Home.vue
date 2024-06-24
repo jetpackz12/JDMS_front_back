@@ -83,7 +83,7 @@
 
     <div class="col-12 xl:col-6">
       <div class="card">
-        <h5>Customer Overview</h5>
+        <h5>Monthly Customer Overview</h5>
         <Skeleton v-if="isShowLoading" height="25rem"></Skeleton>
         <Chart v-else type="line" :data="lineData" :options="lineOptions" />
       </div>
@@ -114,6 +114,7 @@ export default {
         guests: [],
         waterBillingPayment: [],
         electricityBillingPayment: [],
+        tenantBillingPayment: [],
       },
       lineData: null,
       barData: null,
@@ -173,6 +174,13 @@ export default {
               this.documentStyle.getPropertyValue("--primary-400"),
             borderColor: this.documentStyle.getPropertyValue("--primary-400"),
             data: this.renderData.electricityBillingPayment,
+          },
+          {
+            label: "Tenant Billing Payment",
+            backgroundColor:
+              this.documentStyle.getPropertyValue("--primary-600"),
+            borderColor: this.documentStyle.getPropertyValue("--primary-600"),
+            data: this.renderData.tenantBillingPayment,
           },
         ],
       };
@@ -299,19 +307,33 @@ export default {
         return acc;
       }, Array(12).fill(0));
 
-      this.renderData.waterBillingPayment = this.getData.waterBillingPayment.reduce((acc, item) => {
-        const createdDate = new Date(item.created_at);
-        const month = createdDate.getMonth();
-        acc[month] += parseInt(item.amount);
-        return acc;
-      }, Array(12).fill(0));
+      this.renderData.waterBillingPayment =
+        this.getData.waterBillingPayment.reduce((acc, item) => {
+          const createdDate = new Date(item.created_at);
+          const month = createdDate.getMonth();
+          acc[month] += parseInt(item.amount);
+          return acc;
+        }, Array(12).fill(0));
 
-      this.renderData.electricityBillingPayment = this.getData.electricityBillingPayment.reduce((acc, item) => {
-        const createdDate = new Date(item.created_at);
-        const month = createdDate.getMonth();
-        acc[month] += parseInt(item.amount);
-        return acc;
-      }, Array(12).fill(0));
+      this.renderData.electricityBillingPayment =
+        this.getData.electricityBillingPayment.reduce((acc, item) => {
+          const createdDate = new Date(item.created_at);
+          const month = createdDate.getMonth();
+          acc[month] += parseInt(item.amount);
+          return acc;
+        }, Array(12).fill(0));
+
+      this.renderData.tenantBillingPayment =
+        this.getData.tenantBillingPayment.reduce((acc, item) => {
+          const createdDate = new Date(item.created_at);
+          const month = createdDate.getMonth();
+          const totalBilling =
+            parseInt(item.price) +
+            parseInt(item.water_amount) +
+            parseInt(item.electricity_amount);
+          acc[month] += totalBilling;
+          return acc;
+        }, Array(12).fill(0));
 
       if (this.isSuccess) {
         this.isShowLoading = false;
