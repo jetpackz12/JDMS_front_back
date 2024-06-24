@@ -13,6 +13,7 @@ const model = ref([
             { label: 'Guests', icon: 'pi pi-fw pi-users', to: '/guests' },
             { label: 'Water Billing Payment', icon: 'pi pi-fw pi-cloud', to: '/waterBillingPayment' },
             { label: 'Electricity Billing Payment', icon: 'pi pi-fw pi-bolt', to: '/electricityBillingPayment' },
+            { label: 'Tenant Billing Payment', icon: 'pi pi-fw pi-users', to: '/tenantBillingPayment' },
             { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' }
         ]
     },

@@ -8,6 +8,7 @@ import waterBillingPaymentModule from "./water-billing-payment";
 import electricityBillingPaymentModule from "./electricity-billing-payment";
 import reportModule from "./report";
 import homeModule from "./home";
+import tenantBillingPaymentModule from "./tenant-billing-payment";
 
 const store = createStore({
   modules: {
@@ -18,6 +19,7 @@ const store = createStore({
     guestModule,
     waterBillingPaymentModule,
     electricityBillingPaymentModule,
+    tenantBillingPaymentModule,
     reportModule,
     changePasswordModule,
   },

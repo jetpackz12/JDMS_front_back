@@ -43,6 +43,11 @@ const routes = [
                 component: () => import('../views/pages/menu/ElectricityBillingPayment.vue')
             },
             {
+                path: '/tenantBillingPayment',
+                name: 'tenantBillingPayment',
+                component: () => import('../views/pages/menu/TenantBillingPayment.vue')
+            },
+            {
                 path: '/reports',
                 name: 'reports',
                 component: () => import('../views/pages/menu/Reports.vue')
