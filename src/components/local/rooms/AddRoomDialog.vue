@@ -149,8 +149,8 @@ export default {
           life: 3000,
         });
       }
-      this.formData.isShowLoadingCircle = true;
-      this.formData.isDisabled = true;
+      this.formData.isShowLoadingCircle = false;
+      this.formData.isDisabled = false;
     },
     async onUpload(event) {
       await this.$store.dispatch("roomModule/uploadImage", event.files[0]);
