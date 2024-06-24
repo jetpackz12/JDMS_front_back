@@ -121,6 +121,23 @@ export default {
       this.formData.date_issue =
         this.formData.date_issue.toLocaleDateString("en-CA");
 
+      if (this.formData.due_date < this.formData.date_issue) {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Due date must be greater than date issue.",
+          life: 3000,
+        });
+
+        this.formData.due_date = original_due_date;
+        this.formData.date_issue = original_date_issue;
+
+        this.formData.isShowLoadingCircle = false;
+        this.formData.isDisabled = false;
+
+        return;
+      }
+
       await this.$store.dispatch(
         "waterBillingPaymentModule/storeData",
         this.formData
