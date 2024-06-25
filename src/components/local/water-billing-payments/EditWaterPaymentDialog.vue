@@ -14,7 +14,7 @@
         optionLabel="label"
         optionValue="value"
         placeholder="Select tenant"
-        :disabled="formData.isDisabled"
+        :disabled="true"
       >
       </Dropdown>
     </div>
