@@ -6,14 +6,14 @@
     class="p-fluid"
   >
     <div class="field">
-      <label for="tenant" class="mb-3">Tenant</label>
+      <label for="room" class="mb-3">Room</label>
       <Dropdown
-        id="tenant"
-        v-model.lazy="formData.tenant_id"
-        :options="formData.tenants"
+        id="room"
+        v-model.lazy="formData.room_id"
+        :options="formData.rooms"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select tenant"
+        placeholder="Select room"
         :disabled="formData.isDisabled"
       >
       </Dropdown>

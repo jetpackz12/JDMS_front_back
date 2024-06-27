@@ -22,7 +22,6 @@
           <div id="printable" class="card hidden">
             <DataTable :value="datas" tableStyle="min-width: 20rem">
               <Column field="room" header="Room"></Column>
-              <Column field="tenant" header="Tenant"></Column>
               <Column field="unit_con" header="Unit Consumed"></Column>
               <Column field="amount" header="Amount"></Column>
               <Column field="due_date" header="Due Date"></Column>
@@ -71,21 +70,10 @@
               </template>
             </Column>
             <Column
-              field="tenant"
-              header="Tenant"
-              :sortable="true"
-              headerStyle="width:14%; min-width:10rem;"
-            >
-              <template #body="slotProps">
-                <span class="p-column-title">Tenant</span>
-                {{ slotProps.data.tenant }}
-              </template>
-            </Column>
-            <Column
               field="unit_con"
               header="Unit Consumed"
               :sortable="true"
-              headerStyle="width:14%; min-width:10rem;"
+              headerStyle="width:17%; min-width:10rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Unit Consumed</span>
@@ -96,7 +84,7 @@
               field="amount"
               header="Amount"
               :sortable="true"
-              headerStyle="width:14%; min-width:8rem;"
+              headerStyle="width:17%; min-width:8rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Amount</span>
@@ -107,7 +95,7 @@
               field="due_date"
               header="Due Date"
               :sortable="true"
-              headerStyle="width:14%; min-width:8rem;"
+              headerStyle="width:17%; min-width:8rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Due Date</span>
@@ -118,7 +106,7 @@
               field="date_issue"
               header="Date Issue"
               :sortable="true"
-              headerStyle="width:14%; min-width:8rem;"
+              headerStyle="width:17%; min-width:8rem;"
             >
               <template #body="slotProps">
                 <span class="p-column-title">Date Issue</span>
@@ -208,14 +196,14 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
-      tenants: [],
+      rooms: [],
     };
   },
   methods: {
     getInitialFormData() {
       return {
-        tenants: this.tenants,
-        tenant: null,
+        rooms: this.rooms,
+        room: null,
         prev_read: null,
         pres_read: null,
         amount: null,
@@ -259,11 +247,11 @@ export default {
         ...editdata,
         due_date: this.originalFormatDate(editdata.due_date),
         date_issue: this.originalFormatDate(editdata.date_issue),
-        tenants: this.tenants,
+        rooms: this.rooms,
       };
     },
     openDeleteDataDialog(editdata) {
-      this.formData = { tenant: editdata.tenant, id: editdata.id };
+      this.formData = { room: editdata.room, id: editdata.id };
       this.displayDeleteDataDialog = true;
     },
     confirmDeleteSelected() {
@@ -329,10 +317,9 @@ export default {
     },
     exportPDF() {
       const doc = new jsPDF();
-      const col = ["Room", "Tenant", "Unit Consumed", "Amount", "Due Date"];
+      const col = ["Room", "Unit Consumed", "Amount", "Due Date"];
       const rows = this.datas.map((data) => [
         data.room,
-        data.tenant,
         data.unit_con,
         data.amount,
         data.due_date,
@@ -369,10 +356,10 @@ export default {
         };
       });
 
-      this.tenants = this.getData.tenants
+      this.rooms = this.getData.rooms
         .filter((item) => item.status === 1)
         .map((item) => ({
-          label: item.full_name,
+          label: item.room,
           value: item.id,
         }));
 

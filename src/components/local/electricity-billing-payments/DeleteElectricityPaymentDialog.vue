@@ -6,7 +6,7 @@
         style="font-size: 2rem; color: #f97316"
       />
       <span v-if="formData"
-        >Are you sure you want to delete <b>{{ formData.tenant }}</b
+        >Are you sure you want to delete <b>{{ formData.room }}</b
         >?</span
       >
     </div>
