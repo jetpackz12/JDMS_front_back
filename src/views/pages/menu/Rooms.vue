@@ -89,7 +89,7 @@
                           >Description: {{ item.description }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
-                          >Capacity: {{ item.capacity }}</span
+                          >Capacity: {{ item.occupies }} / {{ item.capacity }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
                           >Type:
@@ -174,7 +174,7 @@
                           >Description: {{ item.description }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
-                          >Capacity: {{ item.capacity }}</span
+                          >Capacity: {{ item.occupies }} / {{ item.capacity }}</span
                         >
                         <span class="font-medium text-secondary text-sm"
                           >Type:
