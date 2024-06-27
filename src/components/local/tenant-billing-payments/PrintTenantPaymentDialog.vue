@@ -11,7 +11,7 @@
         Tenant: <b>{{ formData[0].tenant }}</b>
       </h4>
       <h4>
-        Billing Status: <b>{{ formData[0].tenant_billing_status_name }}</b>
+        Billing Status: <b :style="formData[0].tenant_billing_status === 0 ? 'color: rgb(96, 165, 250);' : 'color: rgb(248, 113, 113);'">{{ formData[0].tenant_billing_status_name }}</b>
       </h4>
       </div>
 
