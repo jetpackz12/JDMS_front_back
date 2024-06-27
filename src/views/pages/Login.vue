@@ -71,20 +71,9 @@
               :disabled="isDisabled"
               @keydown.enter="submit()"
             ></Password>
-
-            <div
-              class="flex align-items-center justify-content-between mb-5 gap-5"
-            >
-              <a
-                class="font-medium no-underline ml-2 text-right cursor-pointer"
-                style="color: var(--primary-color)"
-                :disabled="isDisabled"
-                >Forgot password?</a
-              >
-            </div>
             <Button
               label="Sign In"
-              class="w-full p-3 text-xl"
+              class="w-full p-3 text-xl mt-3"
               @click="submit()"
               :disabled="isDisabled"
             ></Button>
