@@ -127,6 +127,8 @@ import DeleteGuestsDialog from '@/components/local/guests/DeleteGuestsDialog.vue
 
 import AddWaterPaymentDialog from '@/components/local/water-billing-payments/AddWaterPaymentDialog.vue';
 import EditWaterPaymentDialog from '@/components/local/water-billing-payments/EditWaterPaymentDialog.vue';
+import DeleteWaterPaymentDialog from '@/components/local/water-billing-payments/DeleteWaterPaymentDialog.vue';
+import DeleteWaterPaymentsDialog from '@/components/local/water-billing-payments/DeleteWaterPaymentsDialog.vue';
 import FilterWaterPaymentDialog from '@/components/local/water-billing-payments/FilterWaterPaymentDialog.vue';
 
 import AddElectricityPaymentDialog from '@/components/local/electricity-billing-payments/AddElectricityPaymentDialog.vue';
@@ -174,6 +176,8 @@ app.component('DeleteGuestsDialog', DeleteGuestsDialog);
 
 app.component('AddWaterPaymentDialog', AddWaterPaymentDialog);
 app.component('EditWaterPaymentDialog', EditWaterPaymentDialog);
+app.component('DeleteWaterPaymentDialog', DeleteWaterPaymentDialog);
+app.component('DeleteWaterPaymentsDialog', DeleteWaterPaymentsDialog);
 app.component('FilterWaterPaymentDialog', FilterWaterPaymentDialog);
 
 app.component('AddElectricityPaymentDialog', AddElectricityPaymentDialog);

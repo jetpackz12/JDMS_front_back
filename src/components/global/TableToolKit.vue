@@ -14,6 +14,7 @@
           v-if="hasDelete"
           label="Delete"
           icon="pi pi-trash"
+          class="mr-2"
           severity="danger"
           @click="confirmDeleteSelected()"
           :disabled="!selectedDatas || !selectedDatas.length"

@@ -9,9 +9,10 @@
 
         <div v-else>
           <TableToolKit
-            :hasDelete="hasDelete"
             :hasFilter="!hasDelete"
+            :selectedDatas="selectedDatas"
             @openNew="openAddDialog"
+            @confirmDeleteSelected="confirmDeleteSelected"
             @filter="openFilterDialog"
             @print="printTable"
             @excel="exportCSV"
@@ -33,6 +34,7 @@
           <DataTable
             ref="dt"
             :value="datas"
+            v-model:selection="selectedDatas"
             dataKey="id"
             :paginator="true"
             :rows="10"
@@ -57,6 +59,7 @@
               </div>
             </template>
 
+            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column
               field="room"
               header="Room"
@@ -138,10 +141,17 @@
               <template #body="slotProps">
                 <Button
                   icon="pi pi-pencil"
-                  class="ml-5"
+                  class="ml-2"
                   severity="success"
                   rounded
                   @click="openUpdateDialog(slotProps.data)"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  class="ml-2"
+                  severity="warning"
+                  rounded
+                  @click="openDeleteDataDialog(slotProps.data)"
                 />
               </template>
             </Column>
@@ -158,6 +168,20 @@
 
         <EditWaterPaymentDialog
           v-model:visible="displayUpdateDialog"
+          :formData="formData"
+          @formSubmit="closeDialog()"
+          @hideDialog="closeDialog()"
+        />
+
+        <DeleteWaterPaymentDialog
+          v-model:visible="displayDeleteDataDialog"
+          :formData="formData"
+          @formSubmit="closeDialog()"
+          @hideDialog="closeDialog()"
+        />
+
+        <DeleteWaterPaymentsDialog
+          v-model:visible="displayDeleteDatasDialog"
           :formData="formData"
           @formSubmit="closeDialog()"
           @hideDialog="closeDialog()"
@@ -189,6 +213,9 @@ export default {
       displayFilterDialog: false,
       displayAddDialog: false,
       displayUpdateDialog: false,
+      displayDeleteDataDialog: false,
+      displayDeleteDatasDialog: false,
+      selectedDatas: null,
       hasDelete: false,
       isShowLoading: true,
       filters: {},
@@ -247,13 +274,26 @@ export default {
         tenants: this.tenants,
       };
     },
+    openDeleteDataDialog(editdata) {
+      this.formData = { tenant: editdata.tenant, id: editdata.id };
+      this.displayDeleteDataDialog = true;
+    },
+    confirmDeleteSelected() {
+      this.formData = this.selectedDatas.map((item) => item.id);
+      this.displayDeleteDatasDialog = true;
+    },
     openFilterDialog() {
       this.displayFilterDialog = true;
       this.formData = this.getInitialFormData();
     },
     closeDialog() {
-      this.displayAddDialog = this.displayUpdateDialog = false;
+      this.displayAddDialog =
+        this.displayUpdateDialog =
+        this.displayDeleteDataDialog =
+        this.displayDeleteDatasDialog =
+          false;
 
+      this.selectedDatas = null;
       this.getWaterBillingPayments();
     },
     closeDialogFilter() {

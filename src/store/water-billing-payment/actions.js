@@ -37,6 +37,30 @@ const waterBillingPaymentActions = {
         commit("IS_SUCCESS", false);
       });
   },
+  async deleteData({ commit }, formData) {
+    await axiosInstance
+      .delete(`/api/v1/waterBillingPayment/destroy/${formData.id}`)
+      .then((response) => {
+        commit("SET_MESSAGE", response.data.message);
+        commit("IS_SUCCESS", true);
+      })
+      .catch((error) => {
+        commit("SET_MESSAGE", error.response.data.message);
+        commit("IS_SUCCESS", false);
+      });
+  },
+  async deleteDatas({ commit }, formData) {
+    await axiosInstance
+      .post(`/api/v1/waterBillingPayment/destroys`, { waterBillingIds:formData })
+      .then((response) => {
+        commit("SET_MESSAGE", response.data.message);
+        commit("IS_SUCCESS", true);
+      })
+      .catch((error) => {
+        commit("SET_MESSAGE", error.response.data.message);
+        commit("IS_SUCCESS", false);
+      });
+  },
   async dateFilter({ commit }, formData) {
     await axiosInstance
       .post(`/api/v1/waterBillingPayment/dateFilter`, { dateFilter: formData })
