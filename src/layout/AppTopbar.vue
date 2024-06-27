@@ -19,10 +19,6 @@ onBeforeUnmount(() => {
     unbindOutsideClickListener();
 });
 
-const logoUrl = computed(() => {
-    return `/layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.png`;
-});
-
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
@@ -73,8 +69,8 @@ const isOutsideClicked = (event) => {
 <template>
     <div class="layout-topbar">
         <router-link to="/dashboard" class="layout-topbar-logo">
-            <img :src="logoUrl" alt="logo" />
-            <span> Dormitory</span>
+            <i class="pi pi-building" style="font-size: 2.5rem"></i>
+            <span>JetDorm</span>
         </router-link>
 
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
