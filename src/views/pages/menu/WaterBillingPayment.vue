@@ -22,7 +22,6 @@
           <div id="printable" class="card hidden">
             <DataTable :value="datas" tableStyle="min-width: 20rem">
               <Column field="room" header="Room"></Column>
-              <Column field="tenant" header="Tenant"></Column>
               <Column field="prev_read" header="Previous Reading"></Column>
               <Column field="pres_read" header="Present Reading"></Column>
               <Column field="amount" header="Amount"></Column>
@@ -69,17 +68,6 @@
               <template #body="slotProps">
                 <span class="p-column-title">Room</span>
                 {{ slotProps.data.room }}
-              </template>
-            </Column>
-            <Column
-              field="tenant"
-              header="Tenant"
-              :sortable="true"
-              headerStyle="width:14%; min-width:10rem;"
-            >
-              <template #body="slotProps">
-                <span class="p-column-title">Tenant</span>
-                {{ slotProps.data.tenant }}
               </template>
             </Column>
             <Column
@@ -220,14 +208,14 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
-      tenants: [],
+      rooms: [],
     };
   },
   methods: {
     getInitialFormData() {
       return {
-        tenants: this.tenants,
-        tenant: null,
+        rooms: this.rooms,
+        room: null,
         prev_read: null,
         pres_read: null,
         amount: null,
@@ -271,11 +259,11 @@ export default {
         ...editdata,
         due_date: this.originalFormatDate(editdata.due_date),
         date_issue: this.originalFormatDate(editdata.date_issue),
-        tenants: this.tenants,
+        rooms: this.rooms,
       };
     },
     openDeleteDataDialog(editdata) {
-      this.formData = { tenant: editdata.tenant, id: editdata.id };
+      this.formData = { room: editdata.room, id: editdata.id };
       this.displayDeleteDataDialog = true;
     },
     confirmDeleteSelected() {
@@ -342,7 +330,6 @@ export default {
       const doc = new jsPDF();
       const col = [
         "Room",
-        "Tenant",
         "Previous Reading",
         "Present Reading",
         "Amount",
@@ -350,7 +337,6 @@ export default {
       ];
       const rows = this.datas.map((data) => [
         data.room,
-        data.tenant,
         data.prev_read,
         data.pres_read,
         data.amount,
@@ -388,10 +374,10 @@ export default {
         };
       });
 
-      this.tenants = this.getData.tenants
+      this.rooms = this.getData.rooms
         .filter((item) => item.status === 1)
         .map((item) => ({
-          label: item.full_name,
+          label: item.room,
           value: item.id,
         }));
 
