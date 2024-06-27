@@ -133,6 +133,8 @@ import FilterWaterPaymentDialog from '@/components/local/water-billing-payments/
 
 import AddElectricityPaymentDialog from '@/components/local/electricity-billing-payments/AddElectricityPaymentDialog.vue';
 import EditElectricityPaymentDialog from '@/components/local/electricity-billing-payments/EditElectricityPaymentDialog.vue';
+import DeleteElectricityPaymentDialog from '@/components/local/electricity-billing-payments/DeleteElectricityPaymentDialog.vue';
+import DeleteElectricityPaymentsDialog from '@/components/local/electricity-billing-payments/DeleteElectricityPaymentsDialog.vue';
 import FilterElectricityPaymentDialog from '@/components/local/electricity-billing-payments/FilterElectricityPaymentDialog.vue';
 
 import PrintTenantPaymentDialog from '@/components/local/tenant-billing-payments/PrintTenantPaymentDialog.vue';
@@ -182,6 +184,8 @@ app.component('FilterWaterPaymentDialog', FilterWaterPaymentDialog);
 
 app.component('AddElectricityPaymentDialog', AddElectricityPaymentDialog);
 app.component('EditElectricityPaymentDialog', EditElectricityPaymentDialog);
+app.component('DeleteElectricityPaymentDialog', DeleteElectricityPaymentDialog);
+app.component('DeleteElectricityPaymentsDialog', DeleteElectricityPaymentsDialog);
 app.component('FilterElectricityPaymentDialog', FilterElectricityPaymentDialog);
 
 app.component('PrintTenantPaymentDialog', PrintTenantPaymentDialog);
