@@ -67,7 +67,7 @@
 
     <div class="formgrid grid">
       <div class="field col">
-        <label for="duration">Duration</label>
+        <label for="duration">Duration ( Hour )</label>
         <InputNumber
           id="duration"
           v-model.lazy="formData.duration"
