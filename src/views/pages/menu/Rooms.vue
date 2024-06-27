@@ -36,7 +36,6 @@
                   :options="sortAvailabilityOptions"
                   optionLabel="label"
                   placeholder="Sort By Availability"
-                  @change="onSortAvailabilityChange($event)"
                 />
                 <Button
                   type="button"
@@ -107,7 +106,7 @@
                         <Button
                           icon="pi pi-pencil"
                           label="Edit"
-                          :disabled="item.availability === 0"
+                          :disabled="item.availability === 0 || item.occupies"
                           class="flex-auto md:flex-initial white-space-nowrap"
                           @click="openUpdateDialog(item)"
                         ></Button>
@@ -116,7 +115,7 @@
                             item.status === 1 ? 'pi pi-times' : 'pi pi-check'
                           "
                           :label="item.status === 1 ? 'Disable' : 'Enable'"
-                          :disabled="item.availability === 0"
+                          :disabled="item.availability === 0 || item.occupies"
                           class="flex-auto md:flex-initial white-space-nowrap"
                           @click="openDeleteDialog(item)"
                         ></Button>
@@ -192,7 +191,7 @@
                         <Button
                           icon="pi pi-pencil"
                           label="Edit"
-                          :disabled="item.availability === 0"
+                          :disabled="item.availability === 0 || item.occupies"
                           class="flex-auto white-space-nowrap"
                           @click="openUpdateDialog(item)"
                         ></Button>
@@ -201,7 +200,7 @@
                             item.status === 1 ? 'pi pi-times' : 'pi pi-check'
                           "
                           :label="item.status === 1 ? 'Disable' : 'Enable'"
-                          :disabled="item.availability === 0"
+                          :disabled="item.availability === 0 || item.occupies"
                           class="flex-auto md:flex-initial white-space-nowrap"
                           @click="openDeleteDialog(item)"
                         ></Button>
@@ -299,7 +298,7 @@ export default {
       const availability = this.sortAvailabilityKey?.value ?? null;
 
       if (availability === "reset") {
-        this.dataviewValue = rooms.filter((item) => item.type === type);
+        this.dataviewValue = type === null ? rooms : rooms.filter((item) => item.type === type);
         return;
       }
 
