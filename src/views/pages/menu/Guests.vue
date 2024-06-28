@@ -136,7 +136,7 @@
                 }}</Tag>
               </template>
             </Column>
-            <Column headerStyle="min-width:10rem;">
+            <Column headerStyle="min-width:8rem;">
               <template #body="slotProps">
                 <Button
                   icon="pi pi-pencil"
@@ -147,7 +147,7 @@
                 />
                 <Button
                   icon="pi pi-trash"
-                  class="mt-2"
+                  class="mr-2"
                   severity="warning"
                   rounded
                   @click="openDeleteDataDialog(slotProps.data)"
