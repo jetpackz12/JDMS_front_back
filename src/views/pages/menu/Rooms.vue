@@ -237,8 +237,6 @@
 </template>
 
 <script>
-import { RoomService } from "@/service/RoomService";
-
 export default {
   data() {
     return {
@@ -259,7 +257,6 @@ export default {
       displayAddDialog: false,
       displayUpdateDialog: false,
       displayDeleteDialog: false,
-      roomService: new RoomService(),
       formData: this.getInitialFormData(),
       typeValues: [
         { label: "Standard", value: 1 },

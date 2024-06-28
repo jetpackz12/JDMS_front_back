@@ -180,8 +180,6 @@
 </template>
 
 <script>
-import { TenantService } from "@/service/TenantService";
-
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import jsPDF from "jspdf";

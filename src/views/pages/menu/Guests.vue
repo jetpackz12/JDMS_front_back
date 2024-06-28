@@ -191,8 +191,6 @@
 </template>
 
 <script>
-import { GuestService } from "@/service/GuestService";
-
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import jsPDF from "jspdf";

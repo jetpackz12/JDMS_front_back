@@ -1,8 +1,0 @@
-{
-    "data": [
-        {"id": "1","room": "1","full_name": "Dummy1 Dummy1 Dummy1","first_name": "Dummy1","middle_name": "Dummy1","last_name": "Dummy1","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","duration": 1,"payment": 1000,"status": 1},
-        {"id": "2","room": "2","full_name": "Dummy2 Dummy2 Dummy2","first_name": "Dummy2","middle_name": "Dummy2","last_name": "Dummy2","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","duration": 1,"payment": 1000,"status": 1},
-        {"id": "3","room": "3","full_name": "Dummy3 Dummy3 Dummy3","first_name": "Dummy3","middle_name": "Dummy3","last_name": "Dummy3","address": "Poblacion Trinidad, Bohol","contact_number": "09123456789","duration": 1,"payment": 1000,"status": 0},
-        {"id": "4","room": "4","full_name": "Dummy4 Dummy4 Dummy4","first_name": "Dummy4","middle_name": "Dummy4","last_name": "Dummy4","address": "Poblacion Trinidad, Bohol","contact_number": "09123456781","duration": 2,"payment": 1001,"status": 1}
-    ]
-}

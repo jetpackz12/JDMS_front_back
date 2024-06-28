@@ -97,8 +97,6 @@
 </template>
 
 <script>
-import { ReportService } from "@/service/ReportService";
-
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import jsPDF from "jspdf";
