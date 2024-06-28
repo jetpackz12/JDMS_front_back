@@ -20,8 +20,9 @@
           style="border-radius: 53px"
         >
           <div class="text-center mb-5">
-            <img :src="logoUrl" alt="Image" height="50" class="mb-3" />
-            <div class="text-900 text-3xl font-medium mb-3">Welcome!</div>
+            <i class="pi pi-building" style="font-size: 2.5rem"></i>
+            <span>JetDorm</span>
+            <div class="text-900 text-3xl font-medium my-3">Welcome!</div>
             <span class="text-600 font-medium">Sign in to continue</span>
           </div>
 
