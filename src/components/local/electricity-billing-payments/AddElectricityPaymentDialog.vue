@@ -103,6 +103,20 @@ export default {
       this.formData.isShowLoadingCircle = true;
       this.formData.isDisabled = true;
 
+      if (!this.formData.due_date || !this.formData.date_issue) {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Please enter due date and date issue",
+          life: 3000,
+        });
+
+        this.formData.isShowLoadingCircle = false;
+        this.formData.isDisabled = false;
+
+        return;
+      }
+
       let original_due_date = this.formData.due_date;
       let original_date_issue = this.formData.date_issue;
 

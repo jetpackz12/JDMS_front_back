@@ -226,7 +226,6 @@ export default {
             transaction: "Water Billing Payment",
             description: [
               `Room: ${item.description.room}`,
-              `Tenant: ${item.description.tenant}`,
               `Previous Reading: ${item.description.prev_read}`,
               `Present Reading: ${item.description.pres_read}`,
               `Amount: ${item.description.amount}`,
@@ -240,7 +239,6 @@ export default {
             transaction: "Electricity Billing Payment",
             description: [
               `Room:  ${item.description.room}`,
-              `Tenant: ${item.description.tenant}`,
               `Unit Consumed: ${item.description.unit_con}`,
               `Amount: ${item.description.amount}`,
               `Due Date: ${this.formatDate(item.description.due_date)}`,

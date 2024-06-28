@@ -6,13 +6,30 @@
     class="p-fluid"
   >
     <div id="print_billing">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h4>
-        Tenant: <b>{{ formData[0].tenant }}</b>
-      </h4>
-      <h4>
-        Billing Status: <b :style="formData[0].tenant_billing_status === 0 ? 'color: rgb(96, 165, 250);' : 'color: rgb(248, 113, 113);'">{{ formData[0].tenant_billing_status_name }}</b>
-      </h4>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+        "
+      >
+        <div>
+          <h4>Tenant:</h4>
+          <h4 v-for="(item, index) in tenantData" :key="index">
+            <b>{{ item.tenant }}</b>
+          </h4>
+        </div>
+        <h4 class="m-0">
+          Billing Status:
+          <b
+            :style="
+              formData[0].tenant_billing_status === 0
+                ? 'color: rgb(96, 165, 250);'
+                : 'color: rgb(248, 113, 113);'
+            "
+            >{{ formData[0].tenant_billing_status_name }}</b
+          >
+        </h4>
       </div>
 
       <h3>Room Billing</h3>
@@ -34,8 +51,16 @@
             {{ "₱" + slotProps.data.water_amount }}
           </template>
         </Column>
-        <Column field="water_due_date" header="Due Date"></Column>
-        <Column field="water_date_issue" header="Date Issue"></Column>
+        <Column field="water_due_date" header="Due Date">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.water_due_date) }}
+          </template>
+        </Column>
+        <Column field="water_date_issue" header="Date Issue">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.water_date_issue) }}
+          </template>
+        </Column>
       </DataTable>
       <h3>Electricity Billing</h3>
       <DataTable :value="formData" showGridlines tableStyle="min-width: 20rem">
@@ -45,8 +70,16 @@
             {{ "₱" + slotProps.data.electricity_amount }}
           </template>
         </Column>
-        <Column field="electricity_due_date" header="Due Date"></Column>
-        <Column field="electricity_date_issue" header="Date Issue"></Column>
+        <Column field="electricity_due_date" header="Due Date">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.electricity_due_date) }}
+          </template>
+        </Column>
+        <Column field="electricity_date_issue" header="Date Issue">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.electricity_date_issue) }}
+          </template>
+        </Column>
       </DataTable>
       <h3>Total Billing Payment</h3>
       <DataTable :value="formData" showGridlines tableStyle="min-width: 20rem">
@@ -69,6 +102,10 @@
 export default {
   props: {
     formData: {
+      type: Object,
+      default: {},
+    },
+    tenantData: {
       type: Object,
       default: {},
     },
@@ -105,6 +142,11 @@ export default {
       }, 500);
 
       return false;
+    },
+    formatDate(value) {
+      const date = new Date(value);
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Intl.DateTimeFormat("en-US", options).format(date);
     },
     hideDialog() {
       this.$emit("hideDialog");

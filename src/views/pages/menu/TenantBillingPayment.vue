@@ -23,7 +23,6 @@
             <DataTable :value="datas" tableStyle="min-width: 20rem">
               <Column field="room" header="Room"></Column>
               <Column field="price" header="Room Price"></Column>
-              <Column field="tenant" header="Tenant"></Column>
               <Column field="electricity" header="Electricity Billing"></Column>
               <Column field="water" header="Water Billing"></Column>
               <Column field="totalBilling" header="Total Billing"></Column>
@@ -81,17 +80,6 @@
               <template #body="slotProps">
                 <span class="p-column-title">Room Price</span>
                 {{ formatCurrency(parseInt(slotProps.data.price)) }}
-              </template>
-            </Column>
-            <Column
-              field="tenant"
-              header="Tenant"
-              :sortable="true"
-              headerStyle="width:14%; min-width:10rem;"
-            >
-              <template #body="slotProps">
-                <span class="p-column-title">Tenant</span>
-                {{ slotProps.data.tenant }}
               </template>
             </Column>
             <Column
@@ -181,6 +169,7 @@
         <PrintTenantPaymentDialog
           v-model:visible="displayPrintDialog"
           :formData="formData"
+          :tenantData="tenantData"
           @formSubmit="closeDialog()"
           @hideDialog="closeDialog()"
         />
@@ -223,11 +212,14 @@ export default {
       isShowLoading: true,
       filters: {},
       formData: this.getInitialFormData(),
+      tenants: null,
+      tenantData: null
     };
   },
   methods: {
     getInitialFormData() {
       return {
+        tenants : this.tenants,
         prev_read: null,
         pres_read: null,
         amount: null,
@@ -253,8 +245,9 @@ export default {
     },
     openPrintDialog(editdata) {
       this.displayPrintDialog = true;
-
+      const room_tenant = this.tenants.filter((item) => item.room_id === editdata.room_id).map((item) => ({tenant: item.full_name}));
       this.formData = [ editdata ];
+      this.tenantData = room_tenant;
     },
     openUnpaidDialog(editdata) {
       this.displayUnpaidDialog = true;
@@ -316,7 +309,6 @@ export default {
       const doc = new jsPDF();
       const col = [
         "Room",
-        "Tenant",
         "Electricity Billing",
         "Water Billing",
         "Total Billing",
@@ -325,7 +317,6 @@ export default {
       ];
       const rows = this.datas.map((data) => [
         data.room,
-        data.tenant,
         data.electricity,
         data.water,
         data.totalBilling,
@@ -382,6 +373,8 @@ export default {
           date: this.formatDate(item.tenant_billing_created_at),
         };
       });
+
+      this.tenants = this.getData.tenants;
 
       if (this.isSuccess) {
         this.isShowLoading = false;

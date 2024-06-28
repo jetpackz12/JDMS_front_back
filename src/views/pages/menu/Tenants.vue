@@ -232,8 +232,12 @@ export default {
     },
     openUpdateDialog(editdata) {
       this.displayUpdateDialog = true;
+      this.getTenantData();
+      const filteredRoom = this.rooms.filter(
+        (item) => item.value !== editdata.room_id
+      );
       this.rooms = [
-        ...this.rooms,
+        ...filteredRoom,
         { label: editdata.room, value: editdata.room_id },
       ];
       this.formData = { ...editdata, rooms: this.rooms };
@@ -331,6 +335,9 @@ export default {
     async getTenants() {
       await this.$store.dispatch("tenantModule/getTenants");
 
+      this.getTenantData();
+    },
+    getTenantData() {
       this.datas = this.getData.tenants
         .filter((item) => item.status === 1)
         .map((item) => ({
