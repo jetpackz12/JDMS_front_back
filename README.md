@@ -5,6 +5,12 @@
 npm install
 ```
 
+# Set Up Environment Variables
+
+```
+cp .env.example .env
+```
+
 # Compiles and hot-reloads for development
 
 ```
